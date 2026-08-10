@@ -1,41 +1,50 @@
-<div class="min-h-screen flex items-center justify-center bg-white">
-  <div class="w-96">
-    <form>
-      <!-- Email -->
-      <div class="mb-8">
-        <label class="block text-xl mb-2">
-          Email
-        </label>
+<div class="w-full bg-white px-6 py-8 sm:px-8 sm:py-9 md:px-10 md:py-10 rounded-lg shadow-lg">
+  <!-- Título -->
+  <h2 class="text-3xl sm:text-4xl font-bold text-center text-gray-900 mb-8 sm:mb-10">
+    Login
+  </h2>
 
-        <input type="email" class="w-full h-14 bg-cyan-800 border-2 border-gray-900 text-white px-4 outline-none">
-      </div>
+  <!-- Username -->
+  <div class="mb-6 sm:mb-7">
+    <label class="block text-sm font-medium text-gray-600 mb-2">
+      Username
+    </label>
 
-      <!-- Password -->
-      <div class="mb-8">
-        <label class="block text-xl mb-2">
-          Password
-        </label>
+    <div class="flex items-center border-b-2 border-gray-200 focus-within:border-purple-500 transition-colors">
+      <span class="text-gray-400 mr-3 flex-shrink-0">
+        👤
+      </span>
 
-        <input type="password" value="**********" class="w-full h-14 bg-cyan-800 border-2 border-gray-900 text-white text-center px-4 outline-none">
-      </div>
-
-      <!-- Remember -->
-      <div class="flex items-center gap-10 mb-16">
-
-        <input type="checkbox" class="w-6 h-6 accent-cyan-800">
-
-        <span class="text-xl">
-          Lembrar sessão
-        </span>
-      </div>
-
-      <!-- Button -->
-      <div class="flex justify-center">
-
-        <button type="submit" class="bg-cyan-800 text-white text-xl px-10 py-1 border-2 border-gray-900 hover:bg-cyan-900">
-          Login
-        </button>
-      </div>
-    </form>
+      <input type="text" placeholder="Type your username" class="w-full py-2 text-sm sm:text-base text-gray-700 outline-none bg-transparent">
+    </div>
   </div>
+
+  <!-- Password -->
+  <div class="mb-3">
+    <label class="block text-sm font-medium text-gray-600 mb-2">
+      Password
+    </label>
+
+    <div class="flex items-center border-b-2 border-gray-200 focus-within:border-purple-500 transition-colors">
+
+      <span class="text-gray-400 mr-3 flex-shrink-0">
+        🔒
+      </span>
+
+      <input type="password" placeholder="Type your password" class="w-full py-2 text-sm sm:text-base text-gray-700 outline-none bg-transparent">
+    </div>
+
+  </div>
+
+  <!-- Forgot password -->
+  <div class="text-right mb-7 sm:mb-8">
+    <a href="#" class="text-xs sm:text-sm text-gray-500 hover:text-purple-600 transition-colors">
+      Forgot password?
+    </a>
+  </div>
+
+  <!-- Login button -->
+  <button type="submit" class="w-full py-3 rounded-full text-sm sm:text-base text-white font-medium bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 hover:opacity-90 transition-opacity">
+    LOGIN
+  </button>
 </div>

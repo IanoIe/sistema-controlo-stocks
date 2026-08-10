@@ -1,7 +1,13 @@
-<app-header></app-header>
+<div class="min-h-screen flex flex-col bg-gray-50">
 
-<main>
-  <app-login></app-login>
-</main>
+  <!-- Header -->
+  <app-header></app-header>
 
-<app-footer></app-footer>
+  <!-- Main -->
+  <main class="flex-1 w-full flex items-center justify-center px-4 py-8 sm:px-6 md:px-8">
+    <app-login class="w-full max-w-md sm:max-w-lg"></app-login>
+  </main>
+  
+  <!-- Footer -->
+  <app-footer></app-footer>
+</div>
