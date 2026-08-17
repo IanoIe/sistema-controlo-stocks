@@ -1,0 +1,45 @@
+<?php
+
+namespace App\DataFixtures;
+
+use App\Entity\Product;
+use App\Entity\StockEntry;
+use App\Entity\User;
+use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Persistence\ObjectManager;
+
+class StockEntryFixtures extends Fixture implements DependentFixtureInterface
+{
+    public function load(ObjectManager $manager): void
+    {
+        $product = $this->getReference(
+            ProductFixtures::PRODUCT_KEYBOARD,
+            Product::class
+        );
+
+        $user = $this->getReference(
+            UserFixtures::USER_ADMIN,
+            User::class
+        );
+
+        $stockEntry = new StockEntry();
+
+        $stockEntry->setQuantity(10);
+        $stockEntry->setDateStockEntry(new \DateTime());
+        $stockEntry->setProduct($product);
+        $stockEntry->setUser($user);
+
+        $manager->persist($stockEntry);
+
+        $manager->flush();
+    }
+
+    public function getDependencies(): array
+    {
+        return [
+            ProductFixtures::class,
+            UserFixtures::class,
+        ];
+    }
+}
