@@ -2,29 +2,55 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use App\Controller\Api\MeAction;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User
+#[ApiResource(
+    normalizationContext: ['groups' => ['user_read']],
+    denormalizationContext: ['groups' => ['user_write']],
+    operations: [
+        new GetCollection(),
+        new Get(),
+        new Get(
+            uriTemplate: '/me',
+            controller: MeAction::class,
+            read: false,
+            security: 'is_granted("ROLE_USER")',
+            name: 'api_me',
+        ),
+    ],
+)]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['user_read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user_read', 'user_write'])]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
+    #[Groups(['user_read', 'user_write'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
     #[ORM\Column]
+    #[Groups(['user_read'])]
     private array $roles = [];
 
     /**
@@ -74,6 +100,11 @@ class User
         return $this;
     }
 
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
     public function getPassword(): ?string
     {
         return $this->password;
@@ -88,7 +119,10 @@ class User
 
     public function getRoles(): array
     {
-        return $this->roles;
+        $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
     }
 
     public function setRoles(array $roles): static
@@ -96,6 +130,10 @@ class User
         $this->roles = $roles;
 
         return $this;
+    }
+
+    public function eraseCredentials(): void
+    {
     }
 
     /**
@@ -119,7 +157,6 @@ class User
     public function removeStockEntry(StockEntry $stockEntry): static
     {
         if ($this->stockEntries->removeElement($stockEntry)) {
-            // set the owning side to null (unless already changed)
             if ($stockEntry->getUser() === $this) {
                 $stockEntry->setUser(null);
             }
@@ -149,7 +186,6 @@ class User
     public function removeStockExit(StockExit $stockExit): static
     {
         if ($this->stockExits->removeElement($stockExit)) {
-            // set the owning side to null (unless already changed)
             if ($stockExit->getUser() === $this) {
                 $stockExit->setUser(null);
             }

@@ -54,6 +54,12 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "host": "0.0.0.0",
+            "allowedHosts": [
+              "stockcontrol.wip"
+            ]
+          },
           "configurations": {
             "production": {
               "buildTarget": "frontend:build:production"

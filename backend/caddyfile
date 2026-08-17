@@ -1,17 +1,14 @@
 stockcontrol.wip {
     tls internal
-
-    reverse_proxy 127.0.0.1:4200
+    reverse_proxy http://127.0.0.1:4200
 }
 
 mobile.stockcontrol.wip {
     tls internal
-
-    reverse_proxy 127.0.0.1:4201
+    reverse_proxy http://127.0.0.1:4201
 }
 
 api.stockcontrol.wip {
     tls internal
-
-    reverse_proxy 127.0.0.1:8000
+    reverse_proxy http://127.0.0.1:8000
 }
