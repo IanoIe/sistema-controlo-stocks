@@ -17,6 +17,11 @@ export const routes: Routes = [
       import('./pages/product/products').then(m => m.Products)
   },
   {
+    path: 'entries',
+    loadComponent: () =>
+      import('./pages/stock-entry/stock-entry').then(m => m.StockEntry)
+  },
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'
