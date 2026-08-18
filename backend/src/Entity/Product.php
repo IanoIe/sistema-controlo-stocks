@@ -21,21 +21,20 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new Get(),
     ],
 )]
-
 class Product
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product_read'])]
+    #[Groups(['product_read', 'stock_entry_read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['product_read', 'product_write'])]
+    #[Groups(['product_read', 'product_write', 'stock_entry_read'])]
     private ?string $nameProduct = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['product_read', 'product_write'])]
+    #[Groups(['product_read', 'product_write', 'stock_entry_read'])]
     private ?string $codeProduct = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
@@ -52,19 +51,25 @@ class Product
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['product_read', 'product_write'])]
+    #[Groups(['product_read'])]
     private ?Category $category = null;
 
     /**
      * @var Collection<int, StockEntry>
      */
-    #[ORM\OneToMany(targetEntity: StockEntry::class, mappedBy: 'product')]
+    #[ORM\OneToMany(
+        targetEntity: StockEntry::class,
+        mappedBy: 'product'
+    )]
     private Collection $stockEntries;
 
     /**
      * @var Collection<int, StockExit>
      */
-    #[ORM\OneToMany(targetEntity: StockExit::class, mappedBy: 'product')]
+    #[ORM\OneToMany(
+        targetEntity: StockExit::class,
+        mappedBy: 'product'
+    )]
     private Collection $stockExits;
 
     public function __construct()
@@ -171,7 +176,6 @@ class Product
     public function removeStockEntry(StockEntry $stockEntry): static
     {
         if ($this->stockEntries->removeElement($stockEntry)) {
-            // set the owning side to null (unless already changed)
             if ($stockEntry->getProduct() === $this) {
                 $stockEntry->setProduct(null);
             }
@@ -201,7 +205,6 @@ class Product
     public function removeStockExit(StockExit $stockExit): static
     {
         if ($this->stockExits->removeElement($stockExit)) {
-            // set the owning side to null (unless already changed)
             if ($stockExit->getProduct() === $this) {
                 $stockExit->setProduct(null);
             }
