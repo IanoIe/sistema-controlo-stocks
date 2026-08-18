@@ -29,29 +29,15 @@
       </thead>
 
       <tbody>
-
-        <tr class="border-b border-gray-200 hover:bg-gray-50">
-          <td class="px-6 py-4">PRD001</td>
-          <td class="px-6 py-4">Teclado</td>
-          <td class="px-6 py-4">Informática</td>
-          <td class="px-6 py-4">25,50 €</td>
-          <td class="px-6 py-4">10</td>
-          <td class="px-6 py-4">5</td>
+        <tr *ngFor="let product of products" class="border-b border-gray-200 hover:bg-gray-50">
+          <td class="px-6 py-4">{{ product.codeProduct }}</td>
+          <td class="px-6 py-4">{{ product.nameProduct }}</td>
+          <td class="px-6 py-4">{{ product.category?.nameCategory }}</td>
+          <td class="px-6 py-4">{{ product.price }} €</td>
+          <td class="px-6 py-4">{{ product.quantity }}</td>
+          <td class="px-6 py-4">{{ product.stockMin }}</td>
         </tr>
-
-        <tr class="border-b border-gray-200 hover:bg-gray-50">
-          <td class="px-6 py-4">PRD002</td>
-          <td class="px-6 py-4">Rato</td>
-          <td class="px-6 py-4">Informática</td>
-          <td class="px-6 py-4">15,00 €</td>
-          <td class="px-6 py-4">3</td>
-          <td class="px-6 py-4">5</td>
-        </tr>
-
       </tbody>
-
     </table>
-
   </div>
-
 </div>
