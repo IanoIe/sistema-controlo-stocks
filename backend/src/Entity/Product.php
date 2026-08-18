@@ -2,37 +2,57 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['product_read']],
+    denormalizationContext: ['groups' => ['product_write']],
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ],
+)]
+
 class Product
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['product_read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['product_read', 'product_write'])]
     private ?string $nameProduct = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['product_read', 'product_write'])]
     private ?string $codeProduct = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Groups(['product_read', 'product_write'])]
     private ?string $price = null;
 
     #[ORM\Column]
+    #[Groups(['product_read', 'product_write'])]
     private ?int $quantity = null;
 
     #[ORM\Column]
+    #[Groups(['product_read', 'product_write'])]
     private ?int $stockMin = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['product_read', 'product_write'])]
     private ?Category $category = null;
 
     /**
