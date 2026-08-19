@@ -1,0 +1,217 @@
+<div class="min-h-screen w-full flex bg-gray-50">
+
+  <!-- Sidebar -->
+  <div class="no-print">
+    <app-sidebar></app-sidebar>
+  </div>
+
+  <!-- Main Content -->
+  <main id="report-content" class="flex-1 p-5">
+    <!-- HEADER -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-800">
+            Reports
+          </h1>
+          <p class="text-gray-500 mt-1">
+            Stock and inventory report
+          </p>
+        </div>
+
+        <button type="button" (click)="printReport()" class="no-print bg-cyan-700 text-white px-5 py-2.5 rounded-lg hover:bg-cyan-800 transition-colors">
+          🖨️ Print Report
+        </button>
+      </div>
+    </div>
+    <!-- ========================================== -->
+    <!-- SUMMARY CARDS -->
+    <!-- ========================================== -->
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <!-- Products -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <p class="text-xs font-medium text-gray-500">
+          Total Products
+        </p>
+        <h2 class="text-2xl font-bold text-gray-800 mt-1">
+          {{ totalProducts }}
+        </h2>
+      </div>
+
+      <!-- Current Stock -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <p class="text-xs font-medium text-gray-500">
+          Current Stock
+        </p>
+        <h2 class="text-2xl font-bold text-cyan-600 mt-1">
+          {{ totalStock }}
+        </h2>
+      </div>
+
+      <!-- Entries -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <p class="text-xs font-medium text-gray-500">
+          Stock Entries
+        </p>
+        <h2 class="text-2xl font-bold text-green-600 mt-1">
+          {{ totalEntries }}
+        </h2>
+      </div>
+
+      <!-- Exits -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <p class="text-xs font-medium text-gray-500">
+          Stock Exits
+        </p>
+        <h2 class="text-2xl font-bold text-red-600 mt-1">
+          {{ totalExits }}
+        </h2>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- STOCK STATUS -->
+    <!-- ========================================== -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+      <!-- Stock Alerts -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+        <h2 class="text-base font-semibold text-gray-800 mb-4">
+          Stock Status
+        </h2>
+
+        <!-- Low Stock -->
+        <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg mb-2">
+          <span class="text-sm text-gray-700">
+            Low Stock
+          </span>
+          <span class="font-semibold text-yellow-600">
+            {{ totalLowStock }}
+          </span>
+        </div>
+
+        <!-- Out of Stock -->
+        <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+          <span class="text-sm text-gray-700">
+            Out of Stock
+          </span>
+          <span class="font-semibold text-red-600">
+            {{ totalOutOfStock }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Categories -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+        <h2 class="text-base font-semibold text-gray-800 mb-4">
+          Products by Category
+        </h2>
+
+        <!-- No categories -->
+        <div *ngIf="categoryStats.length === 0" class="text-sm text-gray-500">
+          No categories available.
+        </div>
+
+        <!-- Categories -->
+        <div *ngFor="let category of categoryStats" class="flex items-center justify-between py-2 border-b border-gray-100">
+          <span class="text-sm text-gray-700">
+            {{ category.name }}
+          </span>
+          <span class="text-sm font-semibold text-cyan-600">
+            {{ category.count }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PRODUCT STOCK TABLE -->
+    <!-- ========================================== -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mt-5">
+      <div class="p-5 border-b border-gray-200">
+        <h2 class="text-base font-semibold text-gray-800">
+          Product Stock Report
+        </h2>
+        <p class="text-xs text-gray-500 mt-1">
+          Current stock status for each product
+        </p>
+      </div>
+
+      <table class="w-full text-left">
+        <thead class="bg-gray-100 border-b border-gray-200">
+          <tr>
+            <th class="px-6 py-4 font-semibold text-gray-700">
+              Product
+            </th>
+            <th class="px-6 py-4 font-semibold text-gray-700">
+              Category
+            </th>
+            <th class="px-6 py-4 font-semibold text-gray-700">
+              Stock
+            </th>
+            <th class="px-6 py-4 font-semibold text-gray-700">
+              Minimum
+            </th>
+            <th class="px-6 py-4 font-semibold text-gray-700">
+              Status
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <!-- Products -->
+          <tr *ngFor="let product of products" class="border-b border-gray-200 hover:bg-gray-50">
+            <!-- Product -->
+            <td class="px-6 py-4">
+              <span class="font-medium text-gray-700">
+                {{ product.nameProduct }}
+              </span>
+            </td>
+
+            <!-- Category -->
+            <td class="px-6 py-4 text-gray-500">
+              {{ product.category?.nameCategory || '-' }}
+            </td>
+
+            <!-- Stock -->
+            <td class="px-6 py-4 font-semibold">
+              {{ product.quantity }}
+            </td>
+
+            <!-- Minimum -->
+            <td class="px-6 py-4 text-gray-500">
+              {{ product.stockMin }}
+            </td>
+
+            <!-- Status -->
+            <td class="px-6 py-4">
+              <!-- Out of stock -->
+              <span *ngIf="product.quantity === 0" class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                Out of Stock
+              </span>
+
+              <!-- Low stock -->
+              <span *ngIf=" product.quantity > 0 && product.quantity <= product.stockMin "
+                class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
+                Low Stock
+              </span>
+
+              <!-- Normal -->
+              <span *ngIf="product.quantity > product.stockMin"
+                class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                In Stock
+              </span>
+            </td>
+          </tr>
+
+          <!-- No products -->
+          <tr *ngIf="products.length === 0">
+            <td colspan="5" class="px-6 py-10 text-center text-gray-500">
+              No products available.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>

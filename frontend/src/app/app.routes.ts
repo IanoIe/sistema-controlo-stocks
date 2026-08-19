@@ -27,6 +27,21 @@ export const routes: Routes = [
       import('./pages/stock-exit/stock-exit').then(m => m.StockExit)
   },
   {
+    path: 'alerts',
+    loadComponent: () =>
+      import('./pages/alerts/alerts').then(m => m.Alerts)
+  },
+  {
+    path: 'histories',
+    loadComponent: () =>
+      import('./pages/histories/histories').then(m => m.Histories)
+  },
+  {
+    path: 'reports',
+    loadComponent: () =>
+      import('./pages/reports/reports').then(m => m.Reports)
+  },
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'

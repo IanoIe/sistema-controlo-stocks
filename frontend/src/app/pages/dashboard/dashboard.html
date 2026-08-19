@@ -8,213 +8,415 @@
 
     <!-- Header -->
     <div class="mb-5">
-      <p class="text-gray-500 text-sm"> Stock overview </p>
+      <p class="text-gray-500 text-sm">
+        Stock overview
+      </p>
     </div>
 
+
     <!-- ==================== CARDS ==================== -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
 
       <!-- Products -->
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+
         <div class="flex items-center justify-between">
+
           <div>
-            <p class="text-xs font-medium text-gray-500"> Products </p>
-            <h2 class="text-2xl font-bold text-gray-800 mt-1"> 48 </h2>
+            <p class="text-xs font-medium text-gray-500">
+              Products
+            </p>
+
+            <h2 class="text-2xl font-bold text-gray-800 mt-1">
+              {{ totalProducts }}
+            </h2>
           </div>
 
-          <div class="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center text-lg">
+          <div
+            class="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center text-lg"
+          >
             📦
           </div>
+
         </div>
+
       </div>
+
 
       <!-- Out of Stock -->
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+
         <div class="flex items-center justify-between">
+
           <div>
-            <p class="text-xs font-medium text-gray-500"> Out of Stock </p>
-            <h2 class="text-2xl font-bold text-red-600 mt-1"> 12 </h2>
+            <p class="text-xs font-medium text-gray-500">
+              Out of Stock
+            </p>
+
+            <h2 class="text-2xl font-bold text-red-600 mt-1">
+              {{ totalOutOfStock }}
+            </h2>
           </div>
-          <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center text-lg">
+
+          <div
+            class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center text-lg"
+          >
             ⚠️
           </div>
+
         </div>
+
       </div>
+
 
       <!-- Low Stock -->
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+
         <div class="flex items-center justify-between">
+
           <div>
-            <p class="text-xs font-medium text-gray-500"> Low Stock </p>
-            <h2 class="text-2xl font-bold text-yellow-600 mt-1"> 12 </h2>
+            <p class="text-xs font-medium text-gray-500">
+              Low Stock
+            </p>
+
+            <h2 class="text-2xl font-bold text-yellow-600 mt-1">
+              {{ totalLowStock }}
+            </h2>
           </div>
 
-          <div class="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center text-lg">
+          <div
+            class="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center text-lg"
+          >
             📉
           </div>
+
         </div>
+
       </div>
+
 
       <!-- Entries -->
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+
         <div class="flex items-center justify-between">
+
           <div>
-            <p class="text-xs font-medium text-gray-500"> Entries </p>
-            <h2 class="text-2xl font-bold text-green-600 mt-1"> 1250 </h2>
+            <p class="text-xs font-medium text-gray-500">
+              Entries
+            </p>
+
+            <h2 class="text-2xl font-bold text-green-600 mt-1">
+              {{ totalEntries }}
+            </h2>
           </div>
-          <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center text-lg">
+
+          <div
+            class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center text-lg"
+          >
             📥
           </div>
+
         </div>
+
       </div>
+
+
+      <!-- Exits -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+
+        <div class="flex items-center justify-between">
+
+          <div>
+            <p class="text-xs font-medium text-gray-500">
+              Exits
+            </p>
+
+            <h2 class="text-2xl font-bold text-red-600 mt-1">
+              {{ totalExits }}
+            </h2>
+          </div>
+
+          <div
+            class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center text-lg"
+          >
+            📤
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
 
 
     <!-- ==================== GRAPHICS ==================== -->
+
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-5">
+
       <!-- Stock Evolution -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <h2 class="text-base font-semibold text-gray-800"> Stock Evolution </h2>
-        <div class="h-56 flex items-center justify-center text-gray-400 text-sm">
-          Stock evolution chart
-        </div>
-      </div>
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+
+  <h2 class="text-base font-semibold text-gray-800 mb-4">
+    Stock Evolution
+  </h2>
+
+  <!-- Sem dados -->
+  <div
+    *ngIf="stockEvolution.length === 0"
+    class="h-56 flex items-center justify-center text-gray-400 text-sm"
+  >
+    No stock evolution data available.
+  </div>
+
+  <!-- Gráfico -->
+  <div
+    *ngIf="stockEvolution.length > 0"
+    class="h-56 flex items-end gap-3 border-b border-l border-gray-200 px-4 pb-2"
+  >
+
+    <div
+      *ngFor="let point of stockEvolution"
+      class="flex-1 h-full flex flex-col justify-end items-center"
+    >
+
+      <!-- Valor -->
+      <span class="text-xs text-gray-500 mb-1">
+        {{ point.stock }}
+      </span>
+
+      <!-- Barra -->
+      <div
+        class="w-full max-w-[45px] bg-cyan-500 rounded-t-md transition-all duration-500"
+        [style.height.%]="
+          stockEvolution.length > 0
+            ? (point.stock / getMaxStock()) * 100
+            : 0
+        "
+      ></div>
+
+      <!-- Data -->
+      <span class="text-[10px] text-gray-400 mt-2">
+        {{ point.date }}
+      </span>
+
+    </div>
+
+  </div>
+
+</div>
+
 
       <!-- Products by Category -->
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+
         <h2 class="text-base font-semibold text-gray-800 mb-4">
           Products by Category
         </h2>
 
         <div class="space-y-3">
-          <!-- Computing -->
-          <div>
-            <div class="flex justify-between text-xs mb-1">
-              <span>Computing</span>
-              <span>18</span>
-            </div>
 
-            <div class="h-1.5 bg-gray-100 rounded-full">
-              <div class="h-1.5 bg-cyan-600 rounded-full w-3/4"></div>
-            </div>
-          </div>
+  <div
+    *ngIf="categoryStats.length === 0"
+    class="p-3 bg-gray-50 rounded-lg text-sm text-gray-500"
+  >
+    No categories available.
+  </div>
 
-          <!-- Desk -->
-          <div>
-            <div class="flex justify-between text-xs mb-1">
-              <span>Desk</span>
-              <span>12</span>
-            </div>
+  <div
+    *ngFor="let category of categoryStats"
+  >
 
-            <div class="h-1.5 bg-gray-100 rounded-full">
-              <div class="h-1.5 bg-cyan-600 rounded-full w-1/2"></div>
-            </div>
-          </div>
+    <div class="flex justify-between text-xs mb-1">
 
-          <!-- Cleaning -->
-          <div>
-            <div class="flex justify-between text-xs mb-1">
-              <span>Cleaning</span>
-              <span>8</span>
-            </div>
+      <span class="text-gray-700">
+        {{ category.name }}
+      </span>
 
-            <div class="h-1.5 bg-gray-100 rounded-full">
-              <div class="h-1.5 bg-cyan-600 rounded-full w-1/3"></div>
-            </div>
-          </div>
+      <span class="text-gray-500">
+        {{ category.count }}
+      </span>
 
-          <!-- Consumables -->
-          <div>
-            <div class="flex justify-between text-xs mb-1">
-              <span>Consumables</span>
-              <span>6</span>
-            </div>
-
-            <div class="h-1.5 bg-gray-100 rounded-full">
-              <div class="h-1.5 bg-cyan-600 rounded-full w-1/4"></div>
-            </div>
-          </div>
-
-          <!-- Tools -->
-          <div>
-            <div class="flex justify-between text-xs mb-1">
-              <span>Tools</span>
-              <span>4</span>
-            </div>
-
-            <div class="h-1.5 bg-gray-100 rounded-full">
-              <div class="h-1.5 bg-cyan-600 rounded-full w-1/5"></div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
+    <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+
+      <div
+        class="h-1.5 bg-cyan-600 rounded-full transition-all duration-500"
+        [style.width.%]="category.percentage"
+      ></div>
+
+    </div>
+
+  </div>
+
+</div>
+
+      </div>
+
+    </div>
+
+
     <!-- ==================== ALERTS / OPERATIONS ==================== -->
+
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
 
-      <!-- Alerts -->
+
+      <!-- ==================== STOCK ALERTS ==================== -->
+
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+
         <h2 class="text-base font-semibold text-gray-800 mb-3">
           ⚠️ Stock Alerts
         </h2>
 
         <div class="space-y-2">
-          <div class="flex justify-between items-center p-2.5 bg-red-50 rounded-lg text-sm">
-            <span class="text-gray-700"> Papel A4 </span>
-            <span class="text-red-600 font-semibold"> Stock: 3 </span>
-          </div>
-          <div class="flex justify-between items-center p-2.5 bg-red-50 rounded-lg text-sm">
-            <span class="text-gray-700"> Toner HP </span>
-            <span class="text-red-600 font-semibold">Stock: 1 </span>
+
+          <!-- No alerts -->
+          <div
+            *ngIf="
+              lowStockProducts.length === 0 &&
+              outOfStockProducts.length === 0
+            "
+            class="p-3 bg-green-50 rounded-lg text-sm text-green-700"
+          >
+            ✓ No stock alerts
           </div>
 
-          <div class="flex justify-between items-center p-2.5 bg-yellow-50 rounded-lg text-sm">
-            <span class="text-gray-700"> Canon Ink Cartridge </span>
-            <span class="text-yellow-600 font-semibold"> Stock: 5 </span>
+
+          <!-- Out of stock -->
+          <div
+            *ngFor="let product of outOfStockProducts"
+            class="flex justify-between items-center p-2.5 bg-red-50 rounded-lg text-sm"
+          >
+
+            <div>
+
+              <span class="text-gray-700 font-medium">
+                {{ product.nameProduct }}
+              </span>
+
+              <p class="text-xs text-gray-500">
+                Minimum stock: {{ product.stockMin }}
+              </p>
+
+            </div>
+
+            <span class="text-red-600 font-semibold">
+              Stock: {{ product.quantity }}
+            </span>
+
           </div>
+
+
+          <!-- Low stock -->
+          <div
+            *ngFor="let product of lowStockProducts"
+            class="flex justify-between items-center p-2.5 bg-yellow-50 rounded-lg text-sm"
+          >
+
+            <div>
+
+              <span class="text-gray-700 font-medium">
+                {{ product.nameProduct }}
+              </span>
+
+              <p class="text-xs text-gray-500">
+                Minimum stock: {{ product.stockMin }}
+              </p>
+
+            </div>
+
+            <span class="text-yellow-600 font-semibold">
+              Stock: {{ product.quantity }}
+            </span>
+
+          </div>
+
         </div>
+
       </div>
 
-      <!-- Latest Operations -->
+
+      <!-- ==================== LATEST OPERATIONS ==================== -->
+
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+
         <h2 class="text-base font-semibold text-gray-800 mb-3">
           Latest Operations
         </h2>
 
         <div class="space-y-2">
-          <!-- Entry -->
-          <div class="flex items-center justify-between border-b pb-2">
+
+
+          <!-- No operations -->
+          <div
+            *ngIf="
+              stockEntries.length === 0 &&
+              stockExits.length === 0
+            "
+            class="p-3 bg-gray-50 rounded-lg text-sm text-gray-500"
+          >
+            No operations registered.
+          </div>
+
+
+          <!-- Stock Entries -->
+          <div
+            *ngFor="let entry of stockEntries"
+            class="flex items-center justify-between border-b border-gray-100 pb-2"
+          >
+
             <div>
-              <p class="text-sm font-medium text-gray-700"> Entry </p>
-              <p class="text-xs text-gray-500"> Papel A4 </p>
+
+              <p class="text-sm font-medium text-green-600">
+                Entry
+              </p>
+
+              <p class="text-xs text-gray-500">
+                {{ entry.product.nameProduct }}
+              </p>
+
             </div>
 
             <span class="text-green-600 text-sm font-semibold">
-              +20
+              +{{ entry.quantity }}
             </span>
+
           </div>
 
-          <!-- Exit -->
-          <div class="flex items-center justify-between border-b pb-2">
+
+          <!-- Stock Exits -->
+          <div
+            *ngFor="let exit of stockExits"
+            class="flex items-center justify-between border-b border-gray-100 pb-2"
+          >
+
             <div>
-              <p class="text-sm font-medium text-gray-700"> Exit </p>
-              <p class="text-xs text-gray-500"> Ink cartridge </p>
-            </div>
-            <span class="text-red-600 text-sm font-semibold"> -5 </span>
-          </div>
 
-          <!-- Entry -->
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm font-medium text-gray-700"> Entry </p>
-              <p class="text-xs text-gray-500"> Toner HP </p>
+              <p class="text-sm font-medium text-red-600">
+                Exit
+              </p>
+
+              <p class="text-xs text-gray-500">
+                {{ exit.product.nameProduct }}
+              </p>
+
             </div>
 
-            <span class="text-green-600 text-sm font-semibold"> +10 </span>
+            <span class="text-red-600 text-sm font-semibold">
+              -{{ exit.quantity }}
+            </span>
+
           </div>
+
+
         </div>
+
       </div>
+
     </div>
+
   </main>
+
 </div>
