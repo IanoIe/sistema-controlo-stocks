@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../../service/productService';
 import { Product } from '../../models/product';
+import { Sidebar } from '../../layout/sidebar/sidebar';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, Sidebar],
   templateUrl: './products.html'
 })
 export class Products implements OnInit {
@@ -31,3 +32,4 @@ export class Products implements OnInit {
     });
   }
 }
+

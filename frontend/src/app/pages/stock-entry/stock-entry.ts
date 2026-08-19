@@ -3,13 +3,15 @@ import { Component, OnInit } from '@angular/core';
 
 import { StockEntryService } from '../../service/stockEntryService';
 import { StockEntryModel } from '../../models/stock-entry';
+import { Sidebar } from '../../layout/sidebar/sidebar';
 
 @Component({
   selector: 'app-stock-entry',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, Sidebar],
   templateUrl: './stock-entry.html'
 })
+
 export class StockEntry implements OnInit {
 
   stockEntries: StockEntryModel[] = [];

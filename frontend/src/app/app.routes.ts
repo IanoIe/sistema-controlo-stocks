@@ -22,6 +22,11 @@ export const routes: Routes = [
       import('./pages/stock-entry/stock-entry').then(m => m.StockEntry)
   },
   {
+    path: 'exit',
+    loadComponent: () =>
+      import('./pages/stock-exit/stock-exit').then(m => m.StockExit)
+  },
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'
