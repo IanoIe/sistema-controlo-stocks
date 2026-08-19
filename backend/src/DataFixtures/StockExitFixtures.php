@@ -1,5 +1,7 @@
 <?php
 
+namespace App\DataFixtures;
+
 use App\DataFixtures\ProductFixtures;
 use App\DataFixtures\UserFixtures;
 use App\Entity\Product;

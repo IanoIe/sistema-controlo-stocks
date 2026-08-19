@@ -2,25 +2,43 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\StockExitRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+
 
 #[ORM\Entity(repositoryClass: StockExitRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['stock_exit_read']],
+    denormalizationContext: ['groups' => ['stock_exit_write']],
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ]
+)]
+
 class StockExit
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['stock_exit_read'])]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(['stock_exit_read', 'stock_exit_wwrite'])]
     private ?int $quantity = null;
 
     #[ORM\Column]
+    #[Groups(['stock_exit_read', 'stock_exit_write'])]
     private ?\DateTime $dateStockExit = null;
 
     #[ORM\ManyToOne(inversedBy: 'stockExits')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['stock_exit_read'])]
     private ?Product $product = null;
 
     #[ORM\ManyToOne(inversedBy: 'stockExits')]

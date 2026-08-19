@@ -30,7 +30,7 @@ class Product
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['product_read', 'product_write', 'stock_entry_read'])]
+    #[Groups(['product_read', 'product_write', 'stock_entry_read', 'stock_exit_read'])]
     private ?string $nameProduct = null;
 
     #[ORM\Column(length: 255)]
