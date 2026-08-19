@@ -29,7 +29,7 @@ class StockExit
     private ?int $id = null;
 
     #[ORM\Column]
-    #[Groups(['stock_exit_read', 'stock_exit_wwrite'])]
+    #[Groups(['stock_exit_read', 'stock_exit_write'])]
     private ?int $quantity = null;
 
     #[ORM\Column]
