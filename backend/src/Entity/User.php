@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Controller\Api\MeAction;
@@ -10,7 +11,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -19,8 +20,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
     normalizationContext: ['groups' => ['user_read']],
     denormalizationContext: ['groups' => ['user_write']],
     operations: [
-        new GetCollection(),
-        new Get(),
+        new GetCollection(
+            security: 'is_granted("ROLE_ADMIN")',
+        ),
+        new Get(
+            security: 'is_granted("ROLE_ADMIN")',
+        ),
         new Get(
             uriTemplate: '/me',
             controller: MeAction::class,
@@ -28,8 +33,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
             security: 'is_granted("ROLE_USER")',
             name: 'api_me',
         ),
+
+        new Delete(
+            security: 'is_granted("ROLE_ADMIN") and (object == user or not ("ROLE_ADMIN" in object.getRoles()))',
+            securityMessage: 'Only administrators can delete non-administrator users.',
+        ),
     ],
 )]
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
