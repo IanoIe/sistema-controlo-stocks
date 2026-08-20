@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../../service/productService';
 import { Product } from '../../models/product';
 import { Sidebar } from '../../layout/sidebar/sidebar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-products',
@@ -14,22 +15,30 @@ export class Products implements OnInit {
 
   products: Product[] = [];
 
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.productService.getProducts().subscribe({
       next: (products) => {
-  console.log('PRODUCTS RECEIVED:', products);
-  console.log('IS ARRAY:', Array.isArray(products));
+        console.log('PRODUCTS RECEIVED:', products);
+        console.log('IS ARRAY:', Array.isArray(products));
 
-  this.products = Array.isArray(products)
-    ? products
-    : [];
-},
+        this.products = Array.isArray(products)
+        ? products
+        : [];
+      },
       error: (error) => {
         console.error('ERROR LOADING PRODUCTS:', error);
       }
     });
+  }
+
+  newProduct(): void {
+    console.log('NEW PRODUCT BUTTON CLICKED');
+    this.router.navigate(['/products/new']);
   }
 }
 

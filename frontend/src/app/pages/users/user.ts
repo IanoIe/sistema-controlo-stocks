@@ -53,18 +53,15 @@ export class User implements OnInit {
       return false;
     }
 
-    // Apenas administradores podem eliminar utilizadores
+
     if (!this.isAdmin(currentUser)) {
       return false;
     }
 
-    // Um admin pode eliminar utilizadores normais
     if (!this.isAdmin(user)) {
       return true;
     }
 
-    // Um admin NÃO pode eliminar outro admin.
-    // Pode eliminar apenas a própria conta.
     return currentUser.email === user.email;
   }
 

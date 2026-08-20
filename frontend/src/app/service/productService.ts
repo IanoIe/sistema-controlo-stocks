@@ -9,6 +9,15 @@ interface ProductCollection {
   totalItems: number;
 }
 
+export interface CreateProduct {
+  codeProduct: string;
+  nameProduct: string;
+  price: string;
+  quantity: number;
+  stockMin: number;
+  category: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -22,5 +31,9 @@ export class ProductService {
     return this.http.get<ProductCollection>(this.apiUrl).pipe(
       map(response => response.member)
     );
+  }
+
+  createProduct(product: CreateProduct): Observable<Product> {
+    return this.http.post<Product>(this.apiUrl, product);
   }
 }
