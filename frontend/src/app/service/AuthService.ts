@@ -1,9 +1,10 @@
 import { computed, inject, Injectable, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable, tap } from "rxjs";
-import { User } from "../models/user";
+
 import { AuthPayload } from "../models/auth-payload";
 import { environment } from "../../environments/environment";
+import { User } from "../models/user";
 
 interface AuthResponse {
   token: string;

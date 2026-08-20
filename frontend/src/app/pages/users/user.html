@@ -1,0 +1,128 @@
+<div class="min-h-screen w-full flex bg-gray-50">
+
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Users Content -->
+  <main class="flex-1 p-5">
+
+    <!-- Header -->
+    <div class="mb-6">
+      <p class="text-sm text-gray-500">
+        Users
+      </p>
+      <h1 class="mt-1 text-2xl font-semibold text-gray-900">
+        User Management
+      </h1>
+    </div>
+
+    <!-- Users Card -->
+    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+
+      @if (loading) {
+        <div class="p-6 text-sm text-gray-500">
+          Loading users...
+        </div>
+      }
+
+      @if (error) {
+        <div class="m-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          {{ error }}
+        </div>
+      }
+
+      @if (!loading && users.length > 0) {
+
+        <!-- Table wrapper -->
+        <div class="overflow-x-auto">
+
+          <table class="w-full text-left text-sm text-gray-600">
+
+            <!-- Header -->
+            <thead class="border-b border-gray-200 bg-gray-50 text-xs uppercase text-gray-500">
+              <tr>
+                <th scope="col" class="px-6 py-4 font-semibold">
+                  Name
+                </th>
+
+                <th scope="col" class="px-6 py-4 font-semibold">
+                  Email
+                </th>
+
+                <th scope="col" class="px-6 py-4 font-semibold">
+                  Role
+                </th>
+
+                <th scope="col" class="px-6 py-4 text-right font-semibold">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+
+            <!-- Body -->
+            <tbody class="divide-y divide-gray-100">
+
+              @for (user of users; track user.id) {
+
+                <tr class="transition-colors hover:bg-gray-50">
+
+                  <!-- Name -->
+                  <td class="whitespace-nowrap px-6 py-4">
+                    <div class="font-medium text-gray-900">
+                      {{ user.name }}
+                    </div>
+                  </td>
+
+                  <!-- Email -->
+                  <td class="whitespace-nowrap px-6 py-4">
+                    {{ user.email }}
+                  </td>
+
+                  <!-- Role -->
+                  <td class="px-6 py-4">
+
+                    @if (isAdmin(user)) {
+                      <span
+                        class="inline-flex items-center rounded-full bg-purple-100 px-2.5 py-1 text-xs font-medium text-purple-700">
+                        ADMIN
+                      </span>
+                    } @else {
+                      <span
+                        class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700">
+                        USER
+                      </span>
+                    }
+
+                  </td>
+
+                  <!-- Actions -->
+                  <td class="px-6 py-4 text-right">
+                    <button type="button" (click)="deleteUser(user)"
+                      class="inline-flex items-center rounded-lg bg-red-600 px-3 py-2 text-xs font-medium text-white hover:bg-red-700">
+                        Delete
+                    </button>
+                  </td>
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+      }
+
+      @if (!loading && users.length === 0) {
+        <div class="p-8 text-center">
+          <p class="text-sm text-gray-500">
+            There are no users.
+          </p>
+        </div>
+      }
+
+    </div>
+
+  </main>
+
+</div>
