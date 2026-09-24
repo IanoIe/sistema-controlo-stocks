@@ -9,3 +9,6 @@ export interface Product {
   stockMin: number;
   category: Category | null;
 }
+
+
+

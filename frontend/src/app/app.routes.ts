@@ -53,6 +53,12 @@ export const routes: Routes = [
       import('./pages/users/user').then(m => m.User)
   },
   {
+  path: 'profile',
+  loadComponent: () =>
+    import('./pages/profile/profile').then(m => m.Profile)
+},
+
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'

@@ -19,6 +19,10 @@ export class UserService {
     );
   }
 
+  getMe(): Observable<UserModel> {
+    return this.http.get<UserModel>(`${environment.apiUrl}/me`);
+  }
+
   deleteUser(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }

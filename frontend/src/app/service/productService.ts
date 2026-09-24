@@ -3,19 +3,11 @@ import { HttpClient } from "@angular/common/http";
 import { Observable, map } from "rxjs";
 import { environment } from "../../environments/environment";
 import { Product } from "../models/product";
+import { CreateProduct } from "../models/create-product";
 
 interface ProductCollection {
   member: Product[];
   totalItems: number;
-}
-
-export interface CreateProduct {
-  codeProduct: string;
-  nameProduct: string;
-  price: string;
-  quantity: number;
-  stockMin: number;
-  category: string;
 }
 
 @Injectable({
@@ -34,6 +26,15 @@ export class ProductService {
   }
 
   createProduct(product: CreateProduct): Observable<Product> {
-    return this.http.post<Product>(this.apiUrl, product);
+    return this.http.post<Product>(
+      this.apiUrl,
+      product,
+      {
+        headers: {
+          'Content-Type': 'application/ld+json',
+          'Accept': 'application/ld+json'
+        }
+      }
+    );
   }
 }
