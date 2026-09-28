@@ -3,123 +3,229 @@
   <!-- Sidebar -->
   <app-sidebar></app-sidebar>
 
-  <!-- Users Content -->
+
+  <!-- Content -->
   <main class="flex-1 p-5">
 
-    <!-- Header -->
-    <div class="mb-6">
-      <p class="text-sm text-gray-500">
-        Users
+    <div class="mb-5">
+      <p class="text-gray-500 text-sm">
+        My profile
       </p>
-      <h1 class="mt-1 text-2xl font-semibold text-gray-900">
-        User Management
-      </h1>
     </div>
 
-    <!-- Users Card -->
-    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
 
-      @if (loading) {
-        <div class="p-6 text-sm text-gray-500">
-          Loading users...
-        </div>
-      }
+    <div class="min-h-screen bg-gray-50 p-6">
 
-      @if (error) {
-        <div class="m-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
-          {{ error }}
-        </div>
-      }
+      <div class="max-w-3xl mx-auto">
 
-      @if (!loading && users.length > 0) {
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
 
-        <!-- Table wrapper -->
-        <div class="overflow-x-auto">
+          <h1 class="text-2xl font-bold text-gray-800 mb-2">
+            My Profile
+          </h1>
 
-          <table class="w-full text-left text-sm text-gray-600">
+          <p class="text-sm text-gray-500 mb-6">
+            Manage your personal information.
+          </p>
 
-            <!-- Header -->
-            <thead class="border-b border-gray-200 bg-gray-50 text-xs uppercase text-gray-500">
-              <tr>
-                <th scope="col" class="px-6 py-4 font-semibold">
+
+          <!-- Loading -->
+
+          @if (loading) {
+
+            <div class="text-gray-500">
+              Loading profile...
+            </div>
+
+          }
+
+
+          <!-- Error -->
+
+          @else if (error) {
+
+            <div class="mb-5 p-3 rounded-lg bg-red-50 text-red-600">
+              {{ error }}
+            </div>
+
+          }
+
+
+          <!-- Profile -->
+
+          @else if (user) {
+
+            <form
+              [formGroup]="profileForm"
+              (ngSubmit)="updateProfile()"
+              class="space-y-5"
+            >
+
+
+              <!-- Name -->
+
+              <div>
+
+                <label
+                  for="name"
+                  class="block text-sm font-medium text-gray-700"
+                >
                   Name
-                </th>
+                </label>
 
-                <th scope="col" class="px-6 py-4 font-semibold">
+                <input
+                  id="name"
+                  type="text"
+                  formControlName="name"
+                  class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2
+                         focus:border-blue-500 focus:ring-2 focus:ring-blue-200
+                         outline-none"
+                >
+
+                @if (
+                  profileForm.controls.name.invalid &&
+                  profileForm.controls.name.touched
+                ) {
+
+                  <p class="mt-1 text-sm text-red-500">
+                    Name is required and must contain at least 2 characters.
+                  </p>
+
+                }
+
+              </div>
+
+
+              <!-- Email -->
+
+              <div>
+
+                <label
+                  for="email"
+                  class="block text-sm font-medium text-gray-700"
+                >
                   Email
-                </th>
+                </label>
 
-                <th scope="col" class="px-6 py-4 font-semibold">
+                <input
+                  id="email"
+                  type="email"
+                  formControlName="email"
+                  class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2
+                         focus:border-blue-500 focus:ring-2 focus:ring-blue-200
+                         outline-none"
+                >
+
+                @if (
+                  profileForm.controls.email.invalid &&
+                  profileForm.controls.email.touched
+                ) {
+
+                  <p class="mt-1 text-sm text-red-500">
+                    Please enter a valid email address.
+                  </p>
+
+                }
+
+              </div>
+
+
+              <!-- Password -->
+
+              <div>
+
+                <label
+                  for="password"
+                  class="block text-sm font-medium text-gray-700"
+                >
+                  New password
+                </label>
+
+                <input
+                  id="password"
+                  type="password"
+                  formControlName="password"
+                  placeholder="Leave empty to keep current password"
+                  class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2
+                         focus:border-blue-500 focus:ring-2 focus:ring-blue-200
+                         outline-none"
+                >
+
+                <p class="mt-1 text-xs text-gray-500">
+                  Leave empty if you don't want to change your password.
+                </p>
+
+              </div>
+
+
+              <!-- Roles -->
+
+              <div>
+
+                <label
+                  class="block text-sm font-medium text-gray-700"
+                >
                   Role
-                </th>
+                </label>
 
-                <th scope="col" class="px-6 py-4 text-right font-semibold">
-                  Actions
-                </th>
-              </tr>
-            </thead>
+                <p class="mt-1 text-gray-600">
+                  {{ user.roles.join(', ') }}
+                </p>
 
-            <!-- Body -->
-            <tbody class="divide-y divide-gray-100">
+              </div>
 
-              @for (user of users; track user.id) {
 
-                <tr class="transition-colors hover:bg-gray-50">
+              <!-- Success -->
 
-                  <!-- Name -->
-                  <td class="whitespace-nowrap px-6 py-4">
-                    <div class="font-medium text-gray-900">
-                      {{ user.name }}
-                    </div>
-                  </td>
+              @if (success) {
 
-                  <!-- Email -->
-                  <td class="whitespace-nowrap px-6 py-4">
-                    {{ user.email }}
-                  </td>
-
-                  <!-- Role -->
-                  <td class="px-6 py-4">
-
-                    @if (isAdmin(user)) {
-                      <span
-                        class="inline-flex items-center rounded-full bg-purple-100 px-2.5 py-1 text-xs font-medium text-purple-700">
-                        ADMIN
-                      </span>
-                    } @else {
-                      <span
-                        class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700">
-                        USER
-                      </span>
-                    }
-
-                  </td>
-
-                  <!-- Actions -->
-                  <td class="px-6 py-4 text-right">
-                    <button type="button" (click)="deleteUser(user)"
-                      class="inline-flex items-center rounded-lg bg-red-600 px-3 py-2 text-xs font-medium text-white hover:bg-red-700">
-                        Delete
-                    </button>
-                  </td>
-                </tr>
+                <div class="p-3 rounded-lg bg-green-50 text-green-600">
+                  {{ success }}
+                </div>
 
               }
 
-            </tbody>
 
-          </table>
+              <!-- Save -->
+
+              <div class="flex justify-end pt-3">
+
+                <button
+                  type="submit"
+                  [disabled]="saving || profileForm.invalid"
+                  class="px-5 py-2 rounded-lg bg-blue-600 text-white
+                         hover:bg-blue-700
+                         disabled:bg-gray-400
+                         disabled:cursor-not-allowed"
+                >
+
+                  @if (saving) {
+                    Saving...
+                  } @else {
+                    Save changes
+                  }
+
+                </button>
+
+              </div>
+
+
+            </form>
+
+          }
+
+
+          @else {
+
+            <div class="text-red-500">
+              Unable to load profile.
+            </div>
+
+          }
 
         </div>
-      }
 
-      @if (!loading && users.length === 0) {
-        <div class="p-8 text-center">
-          <p class="text-sm text-gray-500">
-            There are no users.
-          </p>
-        </div>
-      }
+      </div>
 
     </div>
 

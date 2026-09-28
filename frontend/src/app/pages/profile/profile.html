@@ -3,104 +3,180 @@
   <!-- Sidebar -->
   <app-sidebar></app-sidebar>
 
-  <!-- Dashboard Content -->
-  <main class="flex-1 p-5">
+  <!-- Main content -->
+  <main class="flex-1 p-8">
 
-    <!-- Header -->
-    <div class="mb-5">
-      <p class="text-gray-500 text-sm">Stock overview</p>
-    </div>
+    @if (loading) {
 
-    <div class="min-h-screen bg-gray-50 p-6">
+      <div class="text-gray-500">
+        Loading profile...
+      </div>
 
-      <div class="max-w-3xl mx-auto">
+    } @else if (user) {
 
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="max-w-4xl ml-8">
 
-          <h1 class="text-2xl font-bold text-gray-800 mb-2">
-            My Profile
+
+        <!-- Header -->
+        <div class="mb-8 text-center">
+          <h1 class="text-2xl font-semibold text-gray-900">
+            PROFILE SETTINGS
           </h1>
-
-          <p class="text-sm text-gray-500 mb-6">
-            Manage your personal information.
-          </p>
-
-          @if (loading) {
-
-            <div class="text-gray-500">
-              Loading profile...
-            </div>
-
-          } @else if (user) {
-
-            <div class="space-y-5">
-
-              <!-- Name -->
-              <div>
-                <p class="text-sm text-gray-500">
-                  Name
-                </p>
-
-                <p class="text-lg font-semibold text-gray-800">
-                  {{ user.name }}
-                </p>
-              </div>
-
-              <!-- Email -->
-              <div>
-                <p class="text-sm text-gray-500">
-                  Email
-                </p>
-
-                <p class="text-lg font-semibold text-gray-800">
-                  {{ user.email }}
-                </p>
-              </div>
-
-              <!-- Password -->
-              <div>
-                <p class="text-sm text-gray-500">
-                  Password
-                </p>
-
-                <p class="text-lg font-semibold text-gray-800 tracking-widest">
-                  ••••••••••••
-                </p>
-              </div>
-
-              <!-- Roles -->
-              <div>
-                <p class="text-sm text-gray-500">
-                  Roles
-                </p>
-
-                <div class="flex gap-2 mt-1">
-                  @for (role of user.roles; track role) {
-                    <span
-                      class="px-3 py-1 rounded-full bg-cyan-100 text-cyan-700 text-sm font-medium"
-                    >
-                      {{ role }}
-                    </span>
-                  }
-                </div>
-              </div>
-
-            </div>
-
-          } @else {
-
-            <div class="text-red-500">
-              Unable to load profile.
-            </div>
-
-          }
-
         </div>
+
+
+        <form [formGroup]="profileForm"
+          (ngSubmit)="updateProfile()"
+          class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+
+         <!-- Table header -->
+         <div class="grid grid-cols-2 gap-6 px-6 py-4 bg-gray-50 border-b">
+          <div class="col-span-2 text-sm font-medium text-gray-800 text-center">
+            UPDATE YOUR PROFILE INFORMATION AND PASSWORD
+          </div>
+         </div>
+
+
+
+          <!-- Name -->
+          <div class="grid grid-cols-2 gap-6 px-6 py-6 border-b">
+
+            <!-- Current name -->
+            <div>
+              <label class="block text-xs font-medium text-gray-400 uppercase mb-2">
+                Current name
+              </label>
+
+              <div class="p-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-700">
+                {{ user.name }}
+              </div>
+            </div>
+
+            <!-- Edit name -->
+            <div>
+              <label
+                for="name"
+                class="block text-xs font-medium text-gray-400 uppercase mb-2">
+                Edit name
+              </label>
+
+              <input
+                id="name"
+                formControlName="name"
+                type="text"
+                [placeholder]="user.name"
+                class="w-full p-3 border border-gray-300 rounded-lg
+                       focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+          </div>
+
+
+          <!-- Email -->
+          <div class="grid grid-cols-2 gap-6 px-6 py-6 border-b">
+
+            <!-- Current email -->
+            <div>
+              <label class="block text-xs font-medium text-gray-400 uppercase mb-2">
+                Current email
+              </label>
+
+              <div class="p-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-700">
+                {{ user.email }}
+              </div>
+            </div>
+
+            <!-- Edit email -->
+            <div>
+              <label
+                for="email"
+                class="block text-xs font-medium text-gray-400 uppercase mb-2">
+                Edit email
+              </label>
+
+              <input
+                id="email"
+                formControlName="email"
+                type="email"
+                [placeholder]="user.email"
+                class="w-full p-3 border border-gray-300 rounded-lg
+                       focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+          </div>
+
+
+          <!-- Password -->
+          <div class="grid grid-cols-2 gap-6 px-6 py-6">
+
+            <!-- Current password -->
+            <div>
+              <label
+                for="currentPassword"
+                class="block text-xs font-medium text-gray-400 uppercase mb-2">
+                Current password
+              </label>
+
+              <input
+                id="currentPassword"
+                formControlName="currentPassword"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Enter current password"
+                class="w-full p-3 border border-gray-300 rounded-lg
+                       focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <!-- New password -->
+            <div>
+              <label
+                for="newPassword"
+                class="block text-xs font-medium text-gray-400 uppercase mb-2">
+                New password
+              </label>
+
+              <input
+                id="newPassword"
+                formControlName="newPassword"
+                type="password"
+                autocomplete="new-password"
+                placeholder="Enter new password"
+                class="w-full p-3 border border-gray-300 rounded-lg
+                       focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+          </div>
+
+
+          <!-- Footer / Actions -->
+          <div class="flex justify-end px-6 py-4 bg-gray-50 border-t">
+
+            <button
+              type="submit"
+              [disabled]="saving"
+              class="px-5 py-2.5 bg-blue-600 text-white rounded-lg
+                     hover:bg-blue-700
+                     disabled:opacity-50
+                     disabled:cursor-not-allowed">
+
+              Save changes
+
+            </button>
+
+          </div>
+
+        </form>
 
       </div>
 
-    </div>
+    }
 
   </main>
 
 </div>
+
+

@@ -1,4 +1,6 @@
 import { Component, inject, OnInit } from "@angular/core";
+import { ReactiveFormsModule, FormBuilder, Validators } from "@angular/forms";
+
 import { UserService } from "../../service/userService";
 import { AuthService } from "../../service/AuthService";
 import { UserModel } from "../../models/user";
@@ -7,83 +9,149 @@ import { Sidebar } from "../../layout/sidebar/sidebar";
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [Sidebar],
+  imports: [
+    Sidebar,
+    ReactiveFormsModule
+  ],
   templateUrl: './user.html',
 })
 export class User implements OnInit {
 
   private readonly userService = inject(UserService);
   private readonly authService = inject(AuthService);
+  private readonly fb = inject(FormBuilder);
 
-  users: UserModel[] = [];
+  user: UserModel | null = null;
+
   loading = false;
+  saving = false;
+
   error = '';
+  success = '';
 
   readonly currentUser = this.authService.currentUser;
 
+  readonly profileForm = this.fb.nonNullable.group({
+
+    name: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(2)
+      ]
+    ],
+
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.email
+      ]
+    ],
+
+    password: [
+      ''
+    ]
+
+  });
+
+
   ngOnInit(): void {
-    this.loadUsers();
+    this.loadProfile();
   }
 
-  loadUsers(): void {
+
+  loadProfile(): void {
+
     this.loading = true;
     this.error = '';
 
-    this.userService.getUsers().subscribe({
-      next: (users) => {
-        this.users = users;
+    this.userService.getMe().subscribe({
+
+      next: (user) => {
+
+        this.user = user;
+
+        this.profileForm.patchValue({
+          name: user.name,
+          email: user.email
+        });
+
         this.loading = false;
       },
+
       error: (error) => {
+
         console.error(error);
-        this.error = 'Error loading users.';
+
+        this.error = 'Unable to load your profile.';
         this.loading = false;
       }
+
     });
+
   }
 
-  isAdmin(user: { roles: string[] }): boolean {
-    return user.roles.includes('ROLE_ADMIN');
-  }
 
-  canDelete(user: UserModel): boolean {
-    const currentUser = this.currentUser();
+  updateProfile(): void {
 
-    if (!currentUser) {
-      return false;
-    }
+    if (this.profileForm.invalid) {
 
+      this.profileForm.markAllAsTouched();
 
-    if (!this.isAdmin(currentUser)) {
-      return false;
-    }
-
-    if (!this.isAdmin(user)) {
-      return true;
-    }
-
-    return currentUser.email === user.email;
-  }
-
-  deleteUser(user: UserModel): void {
-    if (!this.canDelete(user)) {
       return;
     }
 
-    if (!confirm(`Are you sure you want to eliminate ${user.name}?`)) {
-      return;
+    this.saving = true;
+    this.error = '';
+    this.success = '';
+
+
+    const formValue = this.profileForm.getRawValue();
+
+    const data: {
+      name: string;
+      email: string;
+      password?: string;
+    } = {
+      name: formValue.name,
+      email: formValue.email
+    };
+
+
+    if (formValue.password.trim() !== '') {
+      data.password = formValue.password;
     }
 
-    this.userService.deleteUser(user.id).subscribe({
-      next: () => {
-        this.users = this.users.filter(
-          currentUser => currentUser.id !== user.id
-        );
+
+    this.userService.updateMe(data).subscribe({
+
+      next: (user) => {
+
+        this.user = user;
+
+        this.profileForm.patchValue({
+          name: user.name,
+          email: user.email,
+          password: ''
+        });
+
+        this.success = 'Profile updated successfully.';
+        this.saving = false;
+
       },
+
       error: (error) => {
+
         console.error(error);
-        this.error = 'The user could not be deleted.';
+
+        this.error = 'Unable to update your profile.';
+        this.saving = false;
+
       }
+
     });
+
   }
+
 }

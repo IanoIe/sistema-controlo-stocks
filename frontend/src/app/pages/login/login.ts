@@ -9,32 +9,31 @@ import { AuthService } from '../../service/AuthService';
   imports: [FormsModule],
   templateUrl: './login.html',
 })
-export class Login {
 
+export class Login {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
-
   email = '';
   password = '';
-
+  error = '';
   onSubmit(): void {
-
+    this.error = '';
     const payload = {
       email: this.email,
       password: this.password
     };
-
     this.authService.login(payload).subscribe({
       next: (response) => {
-
         console.log('LOGIN OK:', response);
-
         this.router.navigate(['/dashboard']);
-
       },
-
       error: (error) => {
-        console.error('Erro login:', error);
+        console.error('Login error:', error);
+        if (error.status === 401) {
+          this.error = 'Incorrect email or password.';
+        } else {
+          this.error = 'An error occurred while logging in. Please try again.';
+        }
       }
     });
   }

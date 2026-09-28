@@ -4,6 +4,12 @@ import { HttpClient } from "@angular/common/http";
 import { map, Observable } from "rxjs";
 import { UserCollection, UserModel } from "../models/user";
 
+interface UpdateMeResponse {
+  success: boolean;
+  message: string;
+  user: UserModel;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,10 +26,29 @@ export class UserService {
   }
 
   getMe(): Observable<UserModel> {
-    return this.http.get<UserModel>(`${environment.apiUrl}/me`);
+    return this.http.get<UserModel>(
+      `${environment.apiUrl}/me`
+    );
+  }
+
+  updateMe(data: {
+    name?: string;
+    email?: string;
+    currentPassword?: string;
+    newPassword?: string;
+  }): Observable<UserModel> {
+
+    return this.http.put<UpdateMeResponse>(
+      `${environment.apiUrl}/me`,
+      data
+    ).pipe(
+      map(response => response.user)
+    );
   }
 
   deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(
+      `${this.apiUrl}/${id}`
+    );
   }
 }
