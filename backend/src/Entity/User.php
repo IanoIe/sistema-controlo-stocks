@@ -6,8 +6,13 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Put;
+
 use App\Controller\Api\MeAction;
+use App\Controller\Api\UpdateMeAction;
+
 use App\Repository\UserRepository;
+
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -38,6 +43,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
             security: 'is_granted("ROLE_ADMIN") and (object == user or not ("ROLE_ADMIN" in object.getRoles()))',
             securityMessage: 'Only administrators can delete non-administrator users.',
         ),
+        new Put(
+            uriTemplate: '/me',
+            controller: UpdateMeAction::class,
+            read: false,
+            deserialize: false,
+            security: 'is_granted("ROLE_USER")',
+            name: 'api_me_update',
+        ),
+
     ],
 )]
 
