@@ -15,220 +15,114 @@
 
 
     <div class="min-h-screen bg-gray-50 p-6">
-
       <div class="max-w-3xl mx-auto">
-
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-
           <h1 class="text-2xl font-bold text-gray-800 mb-2">
             My Profile
           </h1>
-
           <p class="text-sm text-gray-500 mb-6">
             Manage your personal information.
           </p>
 
-
           <!-- Loading -->
-
           @if (loading) {
-
             <div class="text-gray-500">
               Loading profile...
             </div>
-
           }
 
-
           <!-- Error -->
-
           @else if (error) {
-
             <div class="mb-5 p-3 rounded-lg bg-red-50 text-red-600">
               {{ error }}
             </div>
-
           }
 
-
           <!-- Profile -->
-
           @else if (user) {
-
-            <form
-              [formGroup]="profileForm"
-              (ngSubmit)="updateProfile()"
-              class="space-y-5"
-            >
-
-
+            <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" class="space-y-5">
               <!-- Name -->
-
               <div>
-
-                <label
-                  for="name"
-                  class="block text-sm font-medium text-gray-700"
-                >
+                <label for="name" class="block text-sm font-medium text-gray-700">
                   Name
                 </label>
 
-                <input
-                  id="name"
-                  type="text"
-                  formControlName="name"
-                  class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2
-                         focus:border-blue-500 focus:ring-2 focus:ring-blue-200
-                         outline-none"
-                >
-
-                @if (
-                  profileForm.controls.name.invalid &&
-                  profileForm.controls.name.touched
-                ) {
-
-                  <p class="mt-1 text-sm text-red-500">
-                    Name is required and must contain at least 2 characters.
-                  </p>
-
-                }
-
+                <input id="name" type="text" formControlName="name"
+                  class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200
+                  outline-none">
+                  @if (profileForm.controls.name.invalid && profileForm.controls.name.touched) {
+                    <p class="mt-1 text-sm text-red-500">
+                      Name is required and must contain at least 2 characters.
+                    </p>
+                  }
               </div>
 
-
               <!-- Email -->
-
               <div>
-
-                <label
-                  for="email"
-                  class="block text-sm font-medium text-gray-700"
-                >
+                <label for="email" class="block text-sm font-medium text-gray-700">
                   Email
                 </label>
 
-                <input
-                  id="email"
-                  type="email"
-                  formControlName="email"
-                  class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2
-                         focus:border-blue-500 focus:ring-2 focus:ring-blue-200
-                         outline-none"
-                >
-
-                @if (
-                  profileForm.controls.email.invalid &&
-                  profileForm.controls.email.touched
-                ) {
-
-                  <p class="mt-1 text-sm text-red-500">
-                    Please enter a valid email address.
-                  </p>
-
-                }
-
+                <input id="email" type="email"
+                  formControlName="email" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2
+                  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none">
+                  @if (profileForm.controls.email.invalid && profileForm.controls.email.touched) {
+                    <p class="mt-1 text-sm text-red-500">
+                      Please enter a valid email address.
+                    </p>
+                  }
               </div>
-
 
               <!-- Password -->
-
               <div>
-
                 <label
-                  for="password"
-                  class="block text-sm font-medium text-gray-700"
-                >
-                  New password
+                  for="password" class="block text-sm font-medium text-gray-700">
+                    New password
                 </label>
-
-                <input
-                  id="password"
-                  type="password"
-                  formControlName="password"
-                  placeholder="Leave empty to keep current password"
-                  class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2
-                         focus:border-blue-500 focus:ring-2 focus:ring-blue-200
-                         outline-none"
-                >
-
-                <p class="mt-1 text-xs text-gray-500">
-                  Leave empty if you don't want to change your password.
-                </p>
-
+                <input id="password" type="password" formControlName="password" placeholder="Leave empty to keep current password"
+                  class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none">
+                  <p class="mt-1 text-xs text-gray-500">
+                    Leave empty if you don't want to change your password.
+                  </p>
               </div>
 
-
               <!-- Roles -->
-
               <div>
-
-                <label
-                  class="block text-sm font-medium text-gray-700"
-                >
+                <label class="block text-sm font-medium text-gray-700">
                   Role
                 </label>
-
                 <p class="mt-1 text-gray-600">
                   {{ user.roles.join(', ') }}
                 </p>
-
               </div>
 
-
               <!-- Success -->
-
               @if (success) {
-
                 <div class="p-3 rounded-lg bg-green-50 text-green-600">
                   {{ success }}
                 </div>
-
               }
 
-
               <!-- Save -->
-
               <div class="flex justify-end pt-3">
-
-                <button
-                  type="submit"
-                  [disabled]="saving || profileForm.invalid"
-                  class="px-5 py-2 rounded-lg bg-blue-600 text-white
-                         hover:bg-blue-700
-                         disabled:bg-gray-400
-                         disabled:cursor-not-allowed"
-                >
-
+                <button type="submit" [disabled]="saving || profileForm.invalid"
+                  class="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
                   @if (saving) {
                     Saving...
                   } @else {
                     Save changes
                   }
-
                 </button>
-
               </div>
-
-
             </form>
-
           }
-
-
           @else {
-
             <div class="text-red-500">
               Unable to load profile.
             </div>
-
           }
-
         </div>
-
       </div>
-
     </div>
-
   </main>
-
 </div>

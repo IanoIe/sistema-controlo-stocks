@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { Sidebar } from '../../layout/sidebar/sidebar';
 
@@ -12,18 +12,14 @@ import { StockEntryService } from '../../service/stockEntryService';
 
 import { StockExitModel } from '../../models/stock-exit';
 import { StockExitService } from '../../service/stockExitService';
+import { AuthService } from '../../service/AuthService';
 
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
 
-  imports: [
-    CommonModule,
-    RouterLink,
-    RouterLinkActive,
-    Sidebar,
-  ],
+  imports: [CommonModule, RouterLink, RouterLinkActive, Sidebar],
 
   templateUrl: './dashboard.html',
 })
@@ -79,7 +75,9 @@ export class Dashboard implements OnInit {
   constructor(
     private productService: ProductService,
     private stockEntryService: StockEntryService,
-    private stockExitService: StockExitService
+    private stockExitService: StockExitService,
+    private authService: AuthService,
+    private router: Router
   ) {}
 
 
@@ -91,6 +89,24 @@ export class Dashboard implements OnInit {
     this.loadStockEntries();
     this.loadStockExits();
   }
+
+  logout(): void {
+  const confirmed = window.confirm(
+    'Are you sure you want to log out?'
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  this.authService.logout().subscribe({
+    next: () => {
+      this.router.navigate(['/login'], {
+        replaceUrl: true
+      });
+    }
+  });
+}
 
 
   // ==========================================

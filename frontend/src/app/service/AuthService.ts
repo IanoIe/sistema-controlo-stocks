@@ -1,10 +1,16 @@
-import { computed, inject, Injectable, signal } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Observable, tap } from "rxjs";
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import {
+  BehaviorSubject,
+  Observable,
+  of,
+  catchError,
+  tap
+} from 'rxjs';
 
-import { AuthPayload } from "../models/auth-payload";
-import { environment } from "../../environments/environment";
-import { User } from "../models/user";
+import { AuthPayload } from '../models/auth-payload';
+import { environment } from '../../environments/environment';
+import { User } from '../models/user';
 
 interface AuthResponse {
   token: string;
@@ -19,12 +25,22 @@ export class AuthService {
 
   private readonly apiUrl = environment.apiUrl;
 
-  private readonly userSignal = signal<User | null>(null);
-  readonly currentUser = this.userSignal.asReadonly();
+  private readonly authState$ =
+    new BehaviorSubject<boolean>(false);
 
-  readonly isAuthenticated = computed(
-    () => this.userSignal() !== null
-  );
+  private readonly user$ =
+    new BehaviorSubject<User | null>(null);
+
+  readonly isAuthenticated$ =
+    this.authState$.asObservable();
+
+  readonly currentUser =
+    this.user$.asObservable();
+
+  // Usado pelo authGuard
+  isAuthenticated(): boolean {
+    return this.authState$.value;
+  }
 
   login(payload: AuthPayload): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(
@@ -33,6 +49,7 @@ export class AuthService {
     ).pipe(
       tap(response => {
         localStorage.setItem('token', response.token);
+        this.authState$.next(true);
       })
     );
   }
@@ -42,18 +59,27 @@ export class AuthService {
       `${this.apiUrl}/me`
     ).pipe(
       tap(user => {
-        this.userSignal.set(user);
+        console.log('User from backend:', user);
+
+        this.user$.next(user);
+        this.authState$.next(true);
+      }),
+      catchError(() => {
+        localStorage.removeItem('token');
+
+        this.user$.next(null);
+        this.authState$.next(false);
+
+        return of(null);
       })
     );
   }
 
   logout(): Observable<void> {
     localStorage.removeItem('token');
-    this.userSignal.set(null);
+    this.user$.next(null);
+    this.authState$.next(false);
 
-    return new Observable<void>(observer => {
-      observer.next();
-      observer.complete();
-    });
+    return of(void 0);
   }
 }
