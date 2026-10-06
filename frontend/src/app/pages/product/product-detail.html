@@ -1,0 +1,136 @@
+<div class="min-h-screen w-full flex bg-gray-50">
+
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <main class="flex-1 p-5">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">
+          Product Details
+        </h1>
+
+        <p class="text-gray-500 mt-1">
+          View product and inventory information
+        </p>
+      </div>
+
+      <div class="flex gap-3">
+        <button type="button" (click)="backToProducts()" class="rounded-md border border-gray-300
+                 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"> Back
+        </button>
+        <button *ngIf="product" type="button" (click)="editProduct()" class="rounded-md bg-blue-600 px-4 py-2
+                 text-sm font-medium text-white hover:bg-blue-700"> Edit Product
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="rounded-lg bg-white p-8 text-center shadow-sm">
+      <p class="text-gray-500">
+        Loading product...
+      </p>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="!loading && error" class="rounded-lg border border-red-200 bg-red-50 p-6">
+      <p class="font-medium text-red-700">
+        Unable to load product.
+      </p>
+      <button type="button" (click)="backToProducts()"
+        class="mt-4 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Back to Products
+      </button>
+    </div>
+
+    <!-- Product -->
+    <div *ngIf="!loading && !error && product" class="max-w-4xl rounded-lg bg-white p-6 shadow-sm">
+      <!-- Product information -->
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <!-- Code -->
+        <div>
+          <p class="text-sm font-medium text-gray-500">
+            Product Code
+          </p>
+          <p class="mt-1 text-gray-800 font-medium">
+            {{ product.codeProduct }}
+          </p>
+        </div>
+
+        <!-- Name -->
+        <div>
+          <p class="text-sm font-medium text-gray-500">
+            Product Name
+          </p>
+          <p class="mt-1 text-gray-800 font-medium">
+            {{ product.nameProduct }}
+          </p>
+        </div>
+
+        <!-- Category -->
+        <div>
+          <p class="text-sm font-medium text-gray-500">
+            Category
+          </p>
+
+          <p class="mt-1 text-gray-800">
+            {{ product.category?.nameCategory || '—' }}
+          </p>
+        </div>
+
+        <!-- Price -->
+        <div>
+          <p class="text-sm font-medium text-gray-500">
+            Price
+          </p>
+
+          <p class="mt-1 text-gray-800">
+            {{ product.price }} €
+          </p>
+        </div>
+
+        <!-- Quantity -->
+        <div>
+          <p class="text-sm font-medium text-gray-500">
+            Quantity
+          </p>
+
+          <p class="mt-1 font-medium" [ngClass]="{ 'text-red-600': product.quantity === 0,
+              'text-yellow-600': product.quantity > 0 &&
+                product.quantity <= product.stockMin,
+              'text-green-600': product.quantity > product.stockMin}">
+            {{ product.quantity }}
+          </p>
+        </div>
+
+        <!-- Minimum Stock -->
+        <div>
+          <p class="text-sm font-medium text-gray-500">
+            Minimum Stock
+          </p>
+          <p class="mt-1 text-gray-800">
+            {{ product.stockMin }}
+          </p>
+        </div>
+      </div>
+
+
+      <!-- Stock status -->
+      <div class="mt-8 border-t border-gray-200 pt-6">
+        <p class="text-sm font-medium text-gray-500 mb-2">
+          Stock Status
+        </p>
+
+        <span class="inline-flex rounded-full px-3 py-1 text-sm font-medium" [ngClass]="{
+            'bg-red-100 text-red-700': product.quantity === 0, 'bg-yellow-100 text-yellow-700':
+              product.quantity > 0 && product.quantity <= product.stockMin,
+            'bg-green-100 text-green-700': product.quantity > product.stockMin}" >
+          {{ product.quantity === 0 ? 'Out of Stock' : product.quantity <= product.stockMin
+                ? 'Low Stock' : 'In Stock' }}
+        </span>
+      </div>
+    </div>
+  </main>
+</div>

@@ -1,20 +1,28 @@
 <div class="min-h-screen w-full flex bg-gray-50">
 
-   <!-- Sidebar -->
+  <!-- Sidebar -->
   <app-sidebar></app-sidebar>
 
   <main class="flex-1 p-5">
+
+    <!-- Header -->
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-800">Products</h1>
-        <p class="text-gray-500 mt-1">Product and inventory management</p>
+        <h1 class="text-2xl font-bold text-gray-800">
+          Products
+        </h1>
+
+        <p class="text-gray-500 mt-1">
+          Product and inventory management
+        </p>
       </div>
 
-      <button type="button" (click)="newProduct()" class="bg-cyan-700 text-white px-5 py-2.5 rounded-lg hover:bg-cyan-800 transition-colors">
-        + New Product
+      <button type="button" (click)="newProduct()" class="bg-cyan-700 text-white px-5 py-2.5 rounded-lg
+               hover:bg-cyan-800 transition-colors"> + New Product
       </button>
     </div>
 
+    <!-- Products table -->
     <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
       <table class="w-full text-left">
         <thead class="bg-gray-100 border-b border-gray-200">
@@ -25,17 +33,33 @@
             <th class="px-6 py-4 font-semibold text-gray-700">Price</th>
             <th class="px-6 py-4 font-semibold text-gray-700">Quantity</th>
             <th class="px-6 py-4 font-semibold text-gray-700">Minimum Stock</th>
+            <th class="px-6 py-4 font-semibold text-gray-700 text-center">Actions</th>
           </tr>
         </thead>
-
         <tbody>
           <tr *ngFor="let product of products" class="border-b border-gray-200 hover:bg-gray-50">
-            <td class="px-6 py-4">{{ product.codeProduct }}</td>
-            <td class="px-6 py-4">{{ product.nameProduct }}</td>
-            <td class="px-6 py-4">{{ product.category?.nameCategory }}</td>
-            <td class="px-6 py-4">{{ product.price }} €</td>
-            <td class="px-6 py-4">{{ product.quantity }}</td>
+            <td class="px-6 py-4"> {{ product.codeProduct }} </td>
+            <td class="px-6 py-4"> {{ product.nameProduct }}</td>
+            <td class="px-6 py-4"> {{ product.category?.nameCategory }}</td>
+            <td class="px-6 py-4"> {{ product.price }} € </td>
+            <td class="px-6 py-4"> {{ product.quantity }}</td>
             <td class="px-6 py-4">{{ product.stockMin }}</td>
+
+            <!-- Actions -->
+            <td class="px-6 py-4">
+              <div class="flex items-center justify-center gap-2">
+                <button type="button" (click)="viewProduct(product)"
+                  class="rounded-md bg-gray-100 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-200"> View
+                </button>
+                <button type="button" (click)="editProduct(product)"
+                  class="rounded-md bg-blue-100 px-3 py-1.5 text-sm text-blue-700 hover:bg-blue-200"> Edit
+                </button>
+
+                <button type="button" (click)="deleteProduct(product)"
+                  class="rounded-md bg-red-100 px-3 py-1.5 text-sm text-red-700 hover:bg-red-200">Delete
+                </button>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
