@@ -24,6 +24,7 @@ import { AuthService } from '../../service/AuthService';
   templateUrl: './dashboard.html',
 })
 export class Dashboard implements OnInit {
+
   // ==========================================
   // PRODUCTS
   // ==========================================
@@ -32,7 +33,9 @@ export class Dashboard implements OnInit {
   outOfStockProducts: Product[] = [];
 
 
-  // Products grouped by category
+  // ==========================================
+  // PRODUCTS BY CATEGORY
+  // ==========================================
   categoryStats: {
     name: string;
     count: number;
@@ -56,11 +59,13 @@ export class Dashboard implements OnInit {
   totalLowStock = 0;
   totalOutOfStock = 0;
 
+
   // ==========================================
   // STOCK ENTRIES
   // ==========================================
   stockEntries: StockEntryModel[] = [];
   totalEntries = 0;
+
 
   // ==========================================
   // STOCK EXITS
@@ -82,7 +87,7 @@ export class Dashboard implements OnInit {
 
 
   // ==========================================
-  // INIT
+  // INITIALIZATION
   // ==========================================
   ngOnInit(): void {
     this.loadProducts();
@@ -90,90 +95,59 @@ export class Dashboard implements OnInit {
     this.loadStockExits();
   }
 
+
+  // ==========================================
+  // LOGOUT
+  // ==========================================
   logout(): void {
-  const confirmed = window.confirm(
-    'Are you sure you want to log out?'
-  );
-
-  if (!confirmed) {
-    return;
-  }
-
-  this.authService.logout().subscribe({
-    next: () => {
-      this.router.navigate(['/login'], {
-        replaceUrl: true
-      });
+    const confirmed = window.confirm( 'Are you sure you want to log out?');
+    if (!confirmed) {
+      return;
     }
-  });
-}
+
+    this.authService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/login'], {
+          replaceUrl: true
+        });
+      }
+    });
+  }
 
 
   // ==========================================
   // LOAD PRODUCTS
   // ==========================================
   private loadProducts(): void {
-
     this.productService.getProducts().subscribe({
       next: (products) => {
         this.products = products;
-
         // --------------------------------------
         // TOTAL PRODUCTS
         // --------------------------------------
         this.totalProducts = products.length;
-
-
         // --------------------------------------
         // OUT OF STOCK
         // --------------------------------------
-        this.outOfStockProducts = products.filter(
-          product => product.quantity === 0
-        );
-        this.totalOutOfStock =
-          this.outOfStockProducts.length;
-
-
+        this.outOfStockProducts = products.filter(product => product.quantity === 0);
+        this.totalOutOfStock = this.outOfStockProducts.length;
         // --------------------------------------
         // LOW STOCK
         // --------------------------------------
-        this.lowStockProducts = products.filter(
-          product =>
-            product.quantity > 0 &&
-            product.quantity <= product.stockMin
-        );
-
-        this.totalLowStock =
-          this.lowStockProducts.length;
+        this.lowStockProducts = products.filter( product => product.quantity > 0 && product.quantity <= product.stockMin);
+        this.totalLowStock = this.lowStockProducts.length;
         // --------------------------------------
         // PRODUCTS BY CATEGORY
         // --------------------------------------
         this.calculateCategoryStats();
-
-
         // --------------------------------------
         // CONSOLE
         // --------------------------------------
-        console.log(
-          'DASHBOARD PRODUCTS:',
-          this.products
-        );
-        console.log(
-          'TOTAL PRODUCTS:',
-          this.totalProducts
-        );
-        console.log(
-          'TOTAL OUT OF STOCK:',
-          this.totalOutOfStock
-        );
-        console.log(
-          'TOTAL LOW STOCK:',
-          this.totalLowStock
-        );
-        console.log(
-          'CATEGORY STATS:',
-          this.categoryStats
-        );
+        console.log('DASHBOARD PRODUCTS:', this.products);
+        console.log('TOTAL PRODUCTS:', this.totalProducts);
+        console.log('TOTAL OUT OF STOCK:', this.totalOutOfStock);
+        console.log('TOTAL LOW STOCK:', this.totalLowStock);
+        console.log('CATEGORY STATS:', this.categoryStats);
       },
       error: (error) => {
         console.error(
@@ -186,17 +160,19 @@ export class Dashboard implements OnInit {
 
 
   // ==========================================
-  // PRODUCTS BY CATEGORY
+  // CALCULATE PRODUCTS BY CATEGORY
   // ==========================================
   private calculateCategoryStats(): void {
     const categories: {
       [key: string]: number;
     } = {};
 
-    // Count products by category
+
+    // --------------------------------------
+    // COUNT PRODUCTS BY CATEGORY
+    // --------------------------------------
     this.products.forEach(product => {
-      const categoryName =
-        product.category?.nameCategory;
+      const categoryName = product.category?.nameCategory;
       if (!categoryName) {
         return;
       }
@@ -207,15 +183,13 @@ export class Dashboard implements OnInit {
     });
 
 
-    // Largest quantity found
-    const maxCount =
-      Math.max(
-        ...Object.values(categories),
-        0
-      );
-
-
-    // Create an array for the HTML.
+    // --------------------------------------
+    // FIND LARGEST CATEGORY
+    // --------------------------------------
+    const maxCount = Math.max(...Object.values(categories),0);
+    // --------------------------------------
+    // CREATE CATEGORY STATISTICS
+    // --------------------------------------
     this.categoryStats =
       Object.entries(categories).map(
         ([name, count]) => {
@@ -223,19 +197,12 @@ export class Dashboard implements OnInit {
             name: name,
             count: count,
             percentage:
-              maxCount > 0
-                ? (count / maxCount) * 100
-                : 0
+              maxCount > 0 ? (count / maxCount) * 100 : 0
           };
         }
       );
-    console.log(
-      'CATEGORY STATS:',
-      this.categoryStats
-    );
-
+    console.log('CATEGORY STATS:', this.categoryStats);
   }
-
 
   // ==========================================
   // LOAD STOCK ENTRIES
@@ -245,23 +212,28 @@ export class Dashboard implements OnInit {
       next: (entries) => {
         this.stockEntries = entries;
         // --------------------------------------
-        // TOTAL ENTRIES
+        // CALCULATE TOTAL ENTRIES
         // --------------------------------------
         this.totalEntries = entries.reduce(
           (total, entry) =>
             total + entry.quantity,
           0
         );
+
+        // --------------------------------------
+        // CONSOLE
+        // --------------------------------------
         console.log(
           'STOCK ENTRIES:',
           this.stockEntries
         );
-
         console.log(
           'TOTAL ENTRIES:',
           this.totalEntries
         );
-        // Update evolution
+        // --------------------------------------
+        // UPDATE STOCK EVOLUTION
+        // --------------------------------------
         this.calculateStockEvolution();
       },
       error: (error) => {
@@ -273,7 +245,6 @@ export class Dashboard implements OnInit {
     });
   }
 
-
   // ==========================================
   // LOAD STOCK EXITS
   // ==========================================
@@ -281,15 +252,17 @@ export class Dashboard implements OnInit {
     this.stockExitService.getStockExits().subscribe({
       next: (exits) => {
         this.stockExits = exits;
-
         // --------------------------------------
-        // TOTAL EXITS
+        // CALCULATE TOTAL EXITS
         // --------------------------------------
         this.totalExits = exits.reduce(
           (total, exit) =>
             total + exit.quantity,
           0
         );
+        // --------------------------------------
+        // CONSOLE
+        // --------------------------------------
         console.log(
           'STOCK EXITS:',
           this.stockExits
@@ -298,7 +271,9 @@ export class Dashboard implements OnInit {
           'TOTAL EXITS:',
           this.totalExits
         );
-        // Update evolution
+        // --------------------------------------
+        // UPDATE STOCK EVOLUTION
+        // --------------------------------------
         this.calculateStockEvolution();
       },
       error: (error) => {
@@ -312,7 +287,7 @@ export class Dashboard implements OnInit {
 
 
   // ==========================================
-  // STOCK EVOLUTION
+  // CALCULATE STOCK EVOLUTION
   // ==========================================
   private calculateStockEvolution(): void {
     const operations: {
@@ -322,7 +297,7 @@ export class Dashboard implements OnInit {
 
 
     // --------------------------------------
-    // ENTRIES = POSITIVE
+    // STOCK ENTRIES = POSITIVE QUANTITY
     // --------------------------------------
     this.stockEntries.forEach(entry => {
       operations.push({
@@ -335,7 +310,7 @@ export class Dashboard implements OnInit {
 
 
     // --------------------------------------
-    // EXITS = NEGATIVE
+    // STOCK EXITS = NEGATIVE QUANTITY
     // --------------------------------------
     this.stockExits.forEach(exit => {
       operations.push({
@@ -348,7 +323,7 @@ export class Dashboard implements OnInit {
 
 
     // --------------------------------------
-    // ORDER BY DATE
+    // ORDER OPERATIONS BY DATE
     // --------------------------------------
     operations.sort(
       (a, b) =>
@@ -358,56 +333,41 @@ export class Dashboard implements OnInit {
 
 
     // --------------------------------------
-    // CALCULATE STOCK
+    // CALCULATE CURRENT STOCK
     // --------------------------------------
     let currentStock = 0;
+
     this.stockEvolution =
       operations.map(operation => {
-
-        currentStock +=
-          operation.quantity;
-
+        currentStock += operation.quantity;
         return {
-
-          date:
-            operation.date.toLocaleDateString(
-              'pt-PT',
+          date: operation.date.toLocaleDateString('pt-PT',
               {
                 day: '2-digit',
                 month: '2-digit'
               }
             ),
-
           stock: currentStock
-
         };
-
       });
-
-    console.log(
-      'STOCK EVOLUTION:',
-      this.stockEvolution
-    );
-
+      console.log('STOCK EVOLUTION:',this.stockEvolution);
   }
 
-
   // ==========================================
-  // MAX STOCK FOR GRAPH
+  // GET MAXIMUM STOCK FOR GRAPH
   // ==========================================
   getMaxStock(): number {
-
     if (this.stockEvolution.length === 0) {
       return 1;
     }
-
-    return Math.max(
-      ...this.stockEvolution.map(
-        point => point.stock
-      ),
-      1
-    );
-
+    return Math.max( ...this.stockEvolution.map(point => point.stock),
+    1);
   }
 
+  // ==========================================
+  // NAVIGATE TO ALERTS
+  // ==========================================
+  goToAlerts(): void {
+    this.router.navigate(['/alerts']);
+  }
 }
