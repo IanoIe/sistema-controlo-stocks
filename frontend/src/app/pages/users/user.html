@@ -3,126 +3,66 @@
   <!-- Sidebar -->
   <app-sidebar></app-sidebar>
 
-
   <!-- Content -->
-  <main class="flex-1 p-5">
+  <main class="flex-1 p-6">
 
-    <div class="mb-5">
-      <p class="text-gray-500 text-sm">
-        My profile
+    <!-- Header -->
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-gray-800 text-center">
+        Users
+      </h1>
+      <p class="text-sm text-gray-500 mt-1 text-center">
+        List of all users.
       </p>
     </div>
 
-
-    <div class="min-h-screen bg-gray-50 p-6">
-      <div class="max-w-3xl mx-auto">
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h1 class="text-2xl font-bold text-gray-800 mb-2">
-            My Profile
-          </h1>
-          <p class="text-sm text-gray-500 mb-6">
-            Manage your personal information.
-          </p>
-
-          <!-- Loading -->
-          @if (loading) {
-            <div class="text-gray-500">
-              Loading profile...
-            </div>
-          }
-
-          <!-- Error -->
-          @else if (error) {
-            <div class="mb-5 p-3 rounded-lg bg-red-50 text-red-600">
-              {{ error }}
-            </div>
-          }
-
-          <!-- Profile -->
-          @else if (user) {
-            <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" class="space-y-5">
-              <!-- Name -->
-              <div>
-                <label for="name" class="block text-sm font-medium text-gray-700">
-                  Name
-                </label>
-
-                <input id="name" type="text" formControlName="name"
-                  class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200
-                  outline-none">
-                  @if (profileForm.controls.name.invalid && profileForm.controls.name.touched) {
-                    <p class="mt-1 text-sm text-red-500">
-                      Name is required and must contain at least 2 characters.
-                    </p>
-                  }
-              </div>
-
-              <!-- Email -->
-              <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">
-                  Email
-                </label>
-
-                <input id="email" type="email"
-                  formControlName="email" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2
-                  focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none">
-                  @if (profileForm.controls.email.invalid && profileForm.controls.email.touched) {
-                    <p class="mt-1 text-sm text-red-500">
-                      Please enter a valid email address.
-                    </p>
-                  }
-              </div>
-
-              <!-- Password -->
-              <div>
-                <label
-                  for="password" class="block text-sm font-medium text-gray-700">
-                    New password
-                </label>
-                <input id="password" type="password" formControlName="password" placeholder="Leave empty to keep current password"
-                  class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none">
-                  <p class="mt-1 text-xs text-gray-500">
-                    Leave empty if you don't want to change your password.
-                  </p>
-              </div>
-
-              <!-- Roles -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700">
-                  Role
-                </label>
-                <p class="mt-1 text-gray-600">
-                  {{ user.roles.join(', ') }}
-                </p>
-              </div>
-
-              <!-- Success -->
-              @if (success) {
-                <div class="p-3 rounded-lg bg-green-50 text-green-600">
-                  {{ success }}
-                </div>
-              }
-
-              <!-- Save -->
-              <div class="flex justify-end pt-3">
-                <button type="submit" [disabled]="saving || profileForm.invalid"
-                  class="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
-                  @if (saving) {
-                    Saving...
-                  } @else {
-                    Save changes
-                  }
-                </button>
-              </div>
-            </form>
-          }
-          @else {
-            <div class="text-red-500">
-              Unable to load profile.
-            </div>
-          }
-        </div>
+    <!-- Loading -->
+    @if (loading) {
+      <div class="bg-white rounded-lg border border-gray-200 p-6">
+        <p class="text-gray-500">
+          Loading users...
+        </p>
       </div>
-    </div>
+    }
+
+
+    <!-- Error -->
+    @else if (error) {
+      <div class="bg-red-50 border border-red-200 text-red-600 rounded-lg p-4">
+        {{ error }}
+      </div>
+    }
+
+    <!-- Users -->
+    @else {
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <table class="w-full">
+          <!-- Header -->
+          <thead class="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase"> Name </th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase"> Email </th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase"> Role </th>
+            </tr>
+          </thead>
+
+          <!-- Body -->
+          <tbody class="divide-y divide-gray-200">
+            @for (user of users; track user.id) {
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 text-sm font-medium text-gray-800"> {{ user.name }} </td>
+                <td class="px-6 py-4 text-sm text-gray-600"> {{ user.email }} </td>
+                <td class="px-6 py-4 text-sm text-gray-600"> {{ getRole(user) }} </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <!-- No users -->
+        @if (users.length === 0) {
+          <div class="p-6 text-center text-gray-500"> No users found. </div>
+        }
+      </div>
+    }
   </main>
 </div>
