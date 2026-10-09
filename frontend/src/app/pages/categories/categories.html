@@ -1,0 +1,78 @@
+<div class="min-h-screen w-full flex bg-gray-50">
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Main content -->
+  <main class="flex-1 min-w-0 min-h-screen bg-gray-50 p-6 md:p-10">
+    <div class="mx-auto max-w-7xl">
+      <!-- Page header -->
+      <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 class="text-3xl font-bold tracking-tight text-gray-900"> Categories </h1>
+          <p class="mt-2 text-sm text-gray-500"> Browse and explore your product categories. </p>
+        </div>
+
+        <div class="rounded-lg bg-blue-50 px-4 py-3">
+          <span class="text-sm font-medium text-blue-700"> Total categories: {{ categories.length }} </span>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="mb-8">
+        <div class="relative max-w-md">
+          <input type="text" placeholder="Search categories..." [(ngModel)]="searchTerm" aria-label="Search categories"
+            class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 shadow-sm outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"/>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="loading" class="rounded-xl border border-gray-200 bg-white p-10 text-center">
+        <p class="text-sm text-gray-500"> Loading categories... </p>
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="!loading && error" class="rounded-xl border border-red-200 bg-red-50 p-5">
+        <p class="font-medium text-red-700"> {{ error }} </p>
+      </div>
+
+      <!-- Categories grid -->
+      <div *ngIf="!loading && !error" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <article *ngFor="let category of filteredCategories" class="group rounded-2xl border border-gray-200 bg-white p-6
+          shadow-sm transition duration-200 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg">
+          <div class="mb-5 flex items-center justify-between">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-xl font-bold text-blue-600
+              transition group-hover:bg-blue-600 group-hover:text-white">
+                {{ category.nameCategory.charAt(0).toUpperCase() }}
+            </div>
+
+            <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500">
+              #{{ category.id }}
+            </span>
+          </div>
+
+          <h2 class="text-lg font-semibold text-gray-900">
+            {{ category.nameCategory }}
+          </h2>
+
+          <p class="mt-2 text-sm text-gray-500">
+            Product category
+          </p>
+
+          <div class="mt-6 border-t border-gray-100 pt-4">
+            <button type="button" [routerLink]="['/categories', category.id, 'products']"
+              class="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white
+              transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100">
+                View Products
+            </button>
+          </div>
+        </article>
+
+        <!-- Empty state -->
+        <div *ngIf="filteredCategories.length === 0" class="col-span-full rounded-xl border border-dashed border-gray-300 bg-white p-10 text-center">
+          <h2 class="text-lg font-semibold text-gray-800"> No categories found </h2>
+          <p class="mt-2 text-sm text-gray-500"> Try changing your search. </p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

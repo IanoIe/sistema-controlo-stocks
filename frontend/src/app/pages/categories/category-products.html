@@ -1,0 +1,122 @@
+<div class="flex min-h-screen w-full bg-gray-50">
+
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Main content -->
+  <main class="min-w-0 min-h-screen flex-1 p-6 md:p-10">
+    <div class="mx-auto w-full max-w-7xl">
+      <!-- Header -->
+      <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <a routerLink="/categories" class="mb-3 inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800">
+            &larr; Back to Categories
+          </a>
+          <h1 class="text-3xl font-bold tracking-tight text-gray-900">
+            Category Products
+          </h1>
+          <p class="mt-2 text-sm text-gray-500">
+            Products belonging to category #{{ categoryId }}
+          </p>
+        </div>
+
+        <div class="rounded-lg bg-blue-50 px-4 py-3">
+          <span class="text-sm font-medium text-blue-700">
+            Total products: {{ products.length }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="loading" class="rounded-xl border border-gray-200 bg-white p-10 text-center">
+        <p class="text-sm text-gray-500"> Loading products... </p>
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="!loading && error" class="rounded-xl border border-red-200 bg-red-50 p-5">
+        <p class="font-medium text-red-700">
+          {{ error }}
+        </p>
+
+        <button type="button" (click)="loadProducts()"
+          class="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">
+            Try Again
+        </button>
+      </div>
+
+      <!-- Products grid -->
+      <div *ngIf="!loading && !error && products.length > 0" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <article *ngFor="let product of products"
+          class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+          <div class="mb-5 flex items-center justify-between">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+              <span class="text-lg font-bold">
+                {{ product.nameProduct.charAt(0).toUpperCase() }}
+              </span>
+            </div>
+
+            <span class="rounded-full px-3 py-1 text-xs font-medium" [ngClass]="product.active
+              ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'">
+                {{ product.active ? 'Active' : 'Inactive' }}
+            </span>
+          </div>
+
+          <h2 class="text-lg font-semibold text-gray-900">
+            {{ product.nameProduct }}
+          </h2>
+
+          <p class="mt-1 text-sm text-gray-500">
+            Code: {{ product.codeProduct }}
+          </p>
+
+          <p class="mt-4 text-2xl font-bold text-blue-600">
+            {{ product.price }} €
+          </p>
+
+          <div class="mt-5 space-y-2 border-t border-gray-100 pt-4">
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-gray-500">Quantity</span>
+              <span class="font-semibold text-gray-900">
+                {{ product.quantity }}
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-gray-500">Minimum stock</span>
+              <span class="font-semibold text-gray-900">
+                {{ product.stockMin }}
+              </span>
+            </div>
+
+            <div *ngIf="product.quantity <= product.stockMin" class="rounded-lg bg-amber-50 px-3 py-2 text-xs font-medium text-amber-700">
+              Low stock warning
+            </div>
+          </div>
+
+          <div class="mt-5">
+            <a [routerLink]="['/products', product.id]"
+              class="block w-full rounded-lg border border-blue-200 px-4 py-2.5 text-center text-sm font-semibold text-blue-600 transition hover:bg-blue-50">
+                View Details
+            </a>
+          </div>
+        </article>
+      </div>
+
+      <!-- Empty state -->
+      <div *ngIf="!loading && !error && products.length === 0" class="rounded-xl border border-dashed border-gray-300 bg-white p-12 text-center">
+        <h2 class="text-lg font-semibold text-gray-800">
+          No products found
+        </h2>
+
+        <p class="mt-2 text-sm text-gray-500">
+          This category does not contain any products yet.
+        </p>
+
+        <a routerLink="/categories" class="mt-5 inline-block rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-700">
+          Back to Categories
+        </a>
+      </div>
+
+    </div>
+  </main>
+</div>
