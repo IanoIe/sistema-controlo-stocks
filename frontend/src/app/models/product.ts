@@ -8,6 +8,7 @@ export interface Product {
   quantity: number;
   stockMin: number;
   category: Category | null;
+  active: boolean;
 }
 
 

@@ -1,60 +1,158 @@
-<aside class="w-64 min-h-screen bg-white border-r border-gray-200">
-  <nav class="p-4 space-y-2">
-    <a routerLink="/dashboard" routerLinkActive="bg-cyan-700 text-white" [routerLinkActiveOptions]="{ exact: true }"
-      class="flex items-center gap-4 px-4 py-3 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-colors">
-      <span>🏠</span>
-      <span>Dashboard</span>
-    </a>
+<aside class="flex min-h-screen w-64 flex-col bg-violet-50 text-gray-700 border-r border-violet-100">
 
-    <a routerLink="/products" routerLinkActive="bg-cyan-700 text-white" class="flex items-center gap-4 px-4 py-3 rounded-lg
-       text-gray-700 font-medium hover:bg-gray-100 transition-colors">
-      <span>📦</span>
-      <span>Products</span>
-    </a>
+  <!-- Navigation -->
+   <nav class="flex-1 space-y-3 overflow-y-auto px-3 py-3">
 
-    <a routerLink="/entries" routerLinkActive="bg-cyan-700 text-white" class="flex items-center gap-4 px-4 py-3 rounded-lg
-       text-gray-700 font-medium hover:bg-gray-100 transition-colors">
-      <span>📥</span>
-      <span>Entries</span>
-    </a>
+    <!-- MAIN MENU -->
+    <div>
+      <p class="mb-3 px-3 text-lg font-bold uppercase tracking-wider text-gray-700 text-center">
+        Main Menu
+      </p>
 
-    <a routerLink="/exit" routerLinkActive="bg-cyan-700 text-white" class="flex items-center gap-4 px-4 py-3 rounded-lg
-       text-gray-700 font-medium hover:bg-gray-100 transition-colors">
-      <span>📤</span>
-      <span>Exits</span>
-    </a>
+      <div class="space-y-0.5">
 
-    <a routerLink="/alerts" routerLinkActive="bg-cyan-700 text-white" class="flex items-center gap-4 px-4 py-3 rounded-lg
-       text-gray-700 font-medium hover:bg-gray-100 transition-colors">
-      <span>⚠️</span>
-      <span>Alerts</span>
-    </a>
+        <!-- Dashboard -->
+        <a routerLink="/dashboard"
+           routerLinkActive="bg-violet-700 text-white shadow-sm"
+           [routerLinkActiveOptions]="{ exact: true }"
+           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+          <span>🏠</span>
+          <span>Dashboard</span>
+        </a>
 
-    <a routerLink="/histories" routerLinkActive="bg-cyan-700 text-white"
-       class="flex items-center gap-4 px-4 py-3 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-colors">
-      <span>📜</span>
-      <span>Histories</span>
-    </a>
+        <!-- Products -->
+        <a routerLink="/products"
+           routerLinkActive="bg-violet-700 text-white shadow-sm"
+           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+          <span>📦</span>
+          <span>Products</span>
+        </a>
 
-    <a routerLink="/reports" routerLinkActive="bg-cyan-700 text-white" class="flex items-center gap-4 px-4 py-3 rounded-lg
-       text-gray-700 font-medium hover:bg-gray-100 transition-colors">
-      <span>📄</span>
-      <span>Reports</span>
-    </a>
+        <!-- Categories -->
+        <a routerLink="/categories"
+           routerLinkActive="bg-violet-700 text-white shadow-sm"
+           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+          <span>🏷️</span>
+          <span>Categories</span>
+        </a>
 
-    <a routerLink="/users" routerLinkActive="bg-cyan-700 text-white" class="flex items-center gap-4 px-4 py-3 rounded-lg
-       text-gray-700 font-medium hover:bg-gray-100 transition-colors">
-      <span>👥</span>
-      <span>Users</span>
-    </a>
+      </div>
+    </div>
+
+    <!-- STOCK MANAGEMENT -->
+    <div>
+      <p class="mb-3 px-3 text-lg font-bold uppercase tracking-wider text-gray-700 text-center">
+        Stock Management
+      </p>
+
+      <div class="space-y-0.5">
+
+        <!-- Warehouses -->
+        <a routerLink="/warehouses"
+           routerLinkActive="bg-violet-700 text-white shadow-sm"
+           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+          <span>🏭</span>
+          <span>Warehouses</span>
+        </a>
+
+        <!-- Entries -->
+        <a routerLink="/entries"
+           routerLinkActive="bg-violet-700 text-white shadow-sm"
+           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+          <span>📥</span>
+          <span>Entries</span>
+        </a>
+
+        <!-- Exits -->
+        <a routerLink="/exit"
+           routerLinkActive="bg-violet-700 text-white shadow-sm"
+           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+          <span>📤</span>
+          <span>Exits</span>
+        </a>
+
+        <!-- Transfers -->
+        <a routerLink="/transfers"
+           routerLinkActive="bg-violet-700 text-white shadow-sm"
+           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+          <span>🔄</span>
+          <span>Transfers</span>
+        </a>
+
+        <!-- Stock Alerts -->
+        <a routerLink="/alerts"
+           routerLinkActive="bg-violet-700 text-white shadow-sm"
+           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+          <span>⚠️</span>
+          <span>Stock Alerts</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- MANAGEMENT -->
+    <div>
+      <p class="mb-3 px-3 text-lg font-bold uppercase tracking-wider text-gray-700 text-center">
+        Management
+      </p>
+
+      <div class="space-y-0.5">
+
+        <!-- Suppliers -->
+        <a routerLink="/suppliers"
+           routerLinkActive="bg-violet-700 text-white shadow-sm"
+           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+          <span>🚚</span>
+          <span>Suppliers</span>
+        </a>
+
+        <!-- Users -->
+        <a routerLink="/users"
+           routerLinkActive="bg-violet-700 text-white shadow-sm"
+           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+          <span>👥</span>
+          <span>Users</span>
+        </a>
+
+        <!-- Stock History -->
+        <a routerLink="/histories"
+           routerLinkActive="bg-violet-700 text-white shadow-sm"
+           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+          <span>📜</span>
+          <span>Stock History</span>
+        </a>
+
+        <!-- Reports -->
+        <a routerLink="/reports"
+           routerLinkActive="bg-violet-700 text-white shadow-sm"
+           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+          <span>📊</span>
+          <span>Reports</span>
+        </a>
+
+        <!-- Audit Logs -->
+        <a routerLink="/audit-logs"
+           routerLinkActive="bg-violet-700 text-white shadow-sm"
+           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+          <span>🔎</span>
+          <span>Audit Logs</span>
+        </a>
+
+      </div>
+    </div>
+
   </nav>
 
-  <!-- Profile - fundo -->
-  <div class="p-4 border-t border-gray-200">
-    <a routerLink="/profile" routerLinkActive="bg-cyan-700 text-white"
-      class="flex items-center gap-4 px-4 py-3 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-colors">
+  <!-- Profile -->
+  <div class="border-t border-violet-200 p-3">
+
+    <a routerLink="/profile"
+       routerLinkActive="bg-violet-700 text-white shadow-sm"
+       class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
       <span>👤</span>
       <span>Profile</span>
     </a>
+
   </div>
+
 </aside>

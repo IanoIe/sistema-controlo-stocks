@@ -82,4 +82,17 @@ export class ProductService {
       }
     );
   }
+
+  // GET - Products by category
+  getProductsByCategory(categoryId: number): Observable<Product[]> {
+    return this.http
+      .get<ProductCollection>(this.apiUrl, {
+        params: {
+          'category.id': categoryId
+        }
+      })
+      .pipe(
+        map(response => response.member)
+      );
+  }
 }

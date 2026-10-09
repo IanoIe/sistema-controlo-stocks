@@ -13,10 +13,8 @@ export const routes: Routes = [
   },
 
   // =========================
-  // PROTECTED
+  // DASHBOARD
   // =========================
-
-  // Dashboard
   {
     path: 'dashboard',
     canActivate: [authGuard],
@@ -25,34 +23,28 @@ export const routes: Routes = [
   },
 
   // =========================
-  // PRODUCTS
+  // MAIN MENU
   // =========================
 
-  // Product list
+  // Products
   {
     path: 'products',
     canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/product/products').then(m => m.Products)
   },
-
-  // Create product
   {
     path: 'products/new',
     canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/product/product-form').then(m => m.ProductForm)
   },
-
-  // Edit product
   {
     path: 'products/:id/edit',
     canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/product/product-form').then(m => m.ProductForm)
   },
-
-  // View product
   {
     path: 'products/:id',
     canActivate: [authGuard],
@@ -60,9 +52,36 @@ export const routes: Routes = [
       import('./pages/product/product-detail').then(m => m.ProductDetail)
   },
 
+  // Categories
+  {
+    path: 'categories',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/categories/categories').then(m => m.Categories)
+  },
+
+  // Products by category
+  {
+    path: 'categories/:id/products',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/categories/category-products')
+        .then(m => m.CategoryProducts)
+  },
+
   // =========================
-  // STOCK ENTRIES
+  // STOCK MANAGEMENT
   // =========================
+
+  // Warehouses
+  {
+    path: 'warehouses',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/warehouses/warehouses').then(m => m.Warehouses)
+  },
+
+  // Stock Entries
   {
     path: 'entries',
     canActivate: [authGuard],
@@ -70,9 +89,7 @@ export const routes: Routes = [
       import('./pages/stock-entry/stock-entry').then(m => m.StockEntry)
   },
 
-  // =========================
-  // STOCK EXIT
-  // =========================
+  // Stock Exits
   {
     path: 'exit',
     canActivate: [authGuard],
@@ -80,9 +97,15 @@ export const routes: Routes = [
       import('./pages/stock-exit/stock-exit').then(m => m.StockExit)
   },
 
-  // =========================
-  // ALERTS
-  // =========================
+  // Transfers
+  {
+    path: 'transfers',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/transfers/transfers').then(m => m.Transfers)
+  },
+
+  // Stock Alerts
   {
     path: 'alerts',
     canActivate: [authGuard],
@@ -91,8 +114,26 @@ export const routes: Routes = [
   },
 
   // =========================
-  // HISTORIES
+  // MANAGEMENT
   // =========================
+
+  // Suppliers
+  {
+    path: 'suppliers',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/suppliers/suppliers').then(m => m.Suppliers)
+  },
+
+  // Users
+  {
+    path: 'users',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/users/user').then(m => m.User)
+  },
+
+  // Stock History
   {
     path: 'histories',
     canActivate: [authGuard],
@@ -100,9 +141,7 @@ export const routes: Routes = [
       import('./pages/histories/histories').then(m => m.Histories)
   },
 
-  // =========================
-  // REPORTS
-  // =========================
+  // Reports
   {
     path: 'reports',
     canActivate: [authGuard],
@@ -110,14 +149,12 @@ export const routes: Routes = [
       import('./pages/reports/reports').then(m => m.Reports)
   },
 
-  // =========================
-  // USERS
-  // =========================
+  // Audit Logs
   {
-    path: 'users',
+    path: 'audit-logs',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./pages/users/user').then(m => m.User)
+      import('./pages/audit-logs/audit-logs').then(m => m.AuditLogs)
   },
 
   // =========================

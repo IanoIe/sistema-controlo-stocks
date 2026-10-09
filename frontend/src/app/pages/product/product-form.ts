@@ -6,7 +6,7 @@ import { ProductService } from "../../service/productService";
 import { Router } from "@angular/router";
 
 import { Category } from "../../models/category";
-import { CategoryService } from "../../service/categoryService";
+import { CategoriesService } from "../../service/categoriesService";
 import { CreateProduct } from "../../models/create-product";
 
 @Component({
@@ -30,7 +30,7 @@ export class ProductForm implements OnInit {
 
   constructor(
     private productService: ProductService,
-    private categoryService: CategoryService,
+    private categoryService: CategoriesService,
     private router: Router
   ) {}
 
