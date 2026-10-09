@@ -15,12 +15,12 @@ class ProductSupplierFixtures extends Fixture implements DependentFixtureInterfa
     {
         // Retrieve products and suppliers from existing fixtures
         $product1 = $this->getReference(
-            ProductFixtures::PRODUCT_1,
+            ProductFixtures::PRODUCT_KEYBOARD,
             Product::class
         );
 
         $product2 = $this->getReference(
-            ProductFixtures::PRODUCT_2,
+            ProductFixtures::PRODUCT_DESK,
             Product::class
         );
 

@@ -15,12 +15,12 @@ class WarehouseStockFixtures extends Fixture implements DependentFixtureInterfac
     {
         // Retrieve products and warehouses
         $product1 = $this->getReference(
-            ProductFixtures::PRODUCT_1,
+            ProductFixtures::PRODUCT_KEYBOARD,
             Product::class
         );
 
         $product2 = $this->getReference(
-            ProductFixtures::PRODUCT_2,
+            ProductFixtures::PRODUCT_DESK,
             Product::class
         );
 
