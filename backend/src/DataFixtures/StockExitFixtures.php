@@ -2,8 +2,6 @@
 
 namespace App\DataFixtures;
 
-use App\DataFixtures\ProductFixtures;
-use App\DataFixtures\UserFixtures;
 use App\Entity\Product;
 use App\Entity\StockExit;
 use App\Entity\User;
@@ -15,20 +13,25 @@ class StockExitFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
+        // Retrieve the keyboard product
         $product = $this->getReference(
             ProductFixtures::PRODUCT_KEYBOARD,
             Product::class
         );
 
+        // Retrieve the administrator
         $user = $this->getReference(
             UserFixtures::USER_ADMIN,
             User::class
         );
 
+        // Create a stock exit
         $stockExit = new StockExit();
 
         $stockExit->setQuantity(2);
-        $stockExit->setDateStockExit(new \dateTime());
+        $stockExit->setDateStockExit(new \DateTime());
+        $stockExit->setReason('SALE');
+        $stockExit->setNotes('Keyboard stock exit for testing');
         $stockExit->setProduct($product);
         $stockExit->setUser($user);
 
@@ -37,7 +40,6 @@ class StockExitFixtures extends Fixture implements DependentFixtureInterface
         $manager->flush();
     }
 
-    #[Override]
     public function getDependencies(): array
     {
         return [

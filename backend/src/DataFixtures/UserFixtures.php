@@ -24,6 +24,7 @@ class UserFixtures extends Fixture
         $admin->setName('Administrador');
         $admin->setEmail('admin@.com');
         $admin->setRoles(['ROLE_ADMIN']);
+        $admin->setIsActive(true);
 
         $admin->setPassword(
             $this->passwordHasher->hashPassword(
@@ -43,6 +44,7 @@ class UserFixtures extends Fixture
         $admin2->setName('Administrador 2');
         $admin2->setEmail('admin2@.com');
         $admin2->setRoles(['ROLE_ADMIN']);
+        $admin2->setIsActive(true);
 
         $admin2->setPassword(
             $this->passwordHasher->hashPassword(
@@ -60,6 +62,7 @@ class UserFixtures extends Fixture
         $user1->setName('João Silva');
         $user1->setEmail('joao@.com');
         $user1->setRoles(['ROLE_USER']);
+        $user1->setIsActive(true);
 
         $user1->setPassword(
             $this->passwordHasher->hashPassword(
@@ -77,6 +80,7 @@ class UserFixtures extends Fixture
         $user2->setName('Maria Santos');
         $user2->setEmail('maria@.com');
         $user2->setRoles(['ROLE_USER']);
+        $user2->setIsActive(true);
 
         $user2->setPassword(
             $this->passwordHasher->hashPassword(
@@ -94,6 +98,7 @@ class UserFixtures extends Fixture
         $user3->setName('Pedro Costa');
         $user3->setEmail('pedro@.com');
         $user3->setRoles(['ROLE_USER']);
+        $user3->setIsActive(true);
 
         $user3->setPassword(
             $this->passwordHasher->hashPassword(
