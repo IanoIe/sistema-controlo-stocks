@@ -28,9 +28,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
         new GetCollection(
             security: 'is_granted("ROLE_ADMIN")',
         ),
+
         new Get(
             security: 'is_granted("ROLE_ADMIN")',
         ),
+
         new Get(
             uriTemplate: '/me',
             controller: MeAction::class,
@@ -43,6 +45,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
             security: 'is_granted("ROLE_ADMIN") and (object == user or not ("ROLE_ADMIN" in object.getRoles()))',
             securityMessage: 'Only administrators can delete non-administrator users.',
         ),
+
         new Put(
             uriTemplate: '/me',
             controller: UpdateMeAction::class,
@@ -51,10 +54,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
             security: 'is_granted("ROLE_USER")',
             name: 'api_me_update',
         ),
-
     ],
 )]
-
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -78,22 +79,72 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user_read'])]
     private array $roles = [];
 
+    #[ORM\Column(type: 'boolean')]
+    #[Groups(['user_read', 'user_write'])]
+    private ?bool $isActive = true;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['user_read'])]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['user_read'])]
+    private ?\DateTimeImmutable $updatedAt = null;
+
     /**
+     * User -> StockEntry
+     *
      * @var Collection<int, StockEntry>
      */
-    #[ORM\OneToMany(targetEntity: StockEntry::class, mappedBy: 'user')]
+    #[ORM\OneToMany(
+        targetEntity: StockEntry::class,
+        mappedBy: 'user'
+    )]
     private Collection $stockEntries;
 
     /**
+     * User -> StockExit
+     *
      * @var Collection<int, StockExit>
      */
-    #[ORM\OneToMany(targetEntity: StockExit::class, mappedBy: 'user')]
+    #[ORM\OneToMany(
+        targetEntity: StockExit::class,
+        mappedBy: 'user'
+    )]
     private Collection $stockExits;
+
+    /**
+     * User -> StockTransfer
+     *
+     * @var Collection<int, StockTransfer>
+     */
+    #[ORM\OneToMany(
+        targetEntity: StockTransfer::class,
+        mappedBy: 'user'
+    )]
+    private Collection $stockTransfers;
+
+    /**
+     * User -> AuditLog
+     *
+     * @var Collection<int, AuditLog>
+     */
+    #[ORM\OneToMany(
+        targetEntity: AuditLog::class,
+        mappedBy: 'user'
+    )]
+    private Collection $auditLogs;
 
     public function __construct()
     {
         $this->stockEntries = new ArrayCollection();
         $this->stockExits = new ArrayCollection();
+        $this->stockTransfers = new ArrayCollection();
+        $this->auditLogs = new ArrayCollection();
+
+        $this->isActive = true;
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -161,6 +212,46 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
     }
 
+    public function isActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): static
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /*
+     * StockEntry
+     */
+
     /**
      * @return Collection<int, StockEntry>
      */
@@ -190,6 +281,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /*
+     * StockExit
+     */
+
     /**
      * @return Collection<int, StockExit>
      */
@@ -213,6 +308,72 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->stockExits->removeElement($stockExit)) {
             if ($stockExit->getUser() === $this) {
                 $stockExit->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /*
+     * StockTransfer
+     */
+
+    /**
+     * @return Collection<int, StockTransfer>
+     */
+    public function getStockTransfers(): Collection
+    {
+        return $this->stockTransfers;
+    }
+
+    public function addStockTransfer(StockTransfer $stockTransfer): static
+    {
+        if (!$this->stockTransfers->contains($stockTransfer)) {
+            $this->stockTransfers->add($stockTransfer);
+            $stockTransfer->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStockTransfer(StockTransfer $stockTransfer): static
+    {
+        if ($this->stockTransfers->removeElement($stockTransfer)) {
+            if ($stockTransfer->getUser() === $this) {
+                $stockTransfer->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /*
+     * AuditLog
+     */
+
+    /**
+     * @return Collection<int, AuditLog>
+     */
+    public function getAuditLogs(): Collection
+    {
+        return $this->auditLogs;
+    }
+
+    public function addAuditLog(AuditLog $auditLog): static
+    {
+        if (!$this->auditLogs->contains($auditLog)) {
+            $this->auditLogs->add($auditLog);
+            $auditLog->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAuditLog(AuditLog $auditLog): static
+    {
+        if ($this->auditLogs->removeElement($auditLog)) {
+            if ($auditLog->getUser() === $this) {
+                $auditLog->setUser(null);
             }
         }
 

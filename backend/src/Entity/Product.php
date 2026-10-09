@@ -38,11 +38,20 @@ class Product
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['product_read', 'product_write', 'stock_entry_read', 'stock_exit_read'])]
+    #[Groups([
+        'product_read',
+        'product_write',
+        'stock_entry_read',
+        'stock_exit_read'
+    ])]
     private ?string $nameProduct = null;
 
-    #[ORM\Column(length: 255)]
-    #[Groups(['product_read', 'product_write', 'stock_entry_read'])]
+    #[ORM\Column(length: 255, unique: true)]
+    #[Groups([
+        'product_read',
+        'product_write',
+        'stock_entry_read'
+    ])]
     private ?string $codeProduct = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
@@ -57,11 +66,30 @@ class Product
     #[Groups(['product_read', 'product_write'])]
     private ?int $stockMin = null;
 
+    #[ORM\Column(type: 'boolean')]
+    #[Groups(['product_read', 'product_write'])]
+    private ?bool $active = true;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['product_read'])]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['product_read'])]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+    /*
+     * Product -> Category
+     * Muitos produtos pertencem a uma categoria.
+     */
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['product_read', 'product_write'])]
     private ?Category $category = null;
 
+    /*
+     * Product -> StockEntry
+     */
     /**
      * @var Collection<int, StockEntry>
      */
@@ -71,6 +99,9 @@ class Product
     )]
     private Collection $stockEntries;
 
+    /*
+     * Product -> StockExit
+     */
     /**
      * @var Collection<int, StockExit>
      */
@@ -80,10 +111,53 @@ class Product
     )]
     private Collection $stockExits;
 
+    /*
+     * Product -> ProductSupplier
+     */
+    /**
+     * @var Collection<int, ProductSupplier>
+     */
+    #[ORM\OneToMany(
+        targetEntity: ProductSupplier::class,
+        mappedBy: 'product'
+    )]
+    private Collection $productSuppliers;
+
+    /*
+     * Product -> WarehouseStock
+     */
+    /**
+     * @var Collection<int, WarehouseStock>
+     */
+    #[ORM\OneToMany(
+        targetEntity: WarehouseStock::class,
+        mappedBy: 'product'
+    )]
+    private Collection $warehouseStocks;
+
+    /*
+     * Product -> StockTransferItem
+     */
+    /**
+     * @var Collection<int, StockTransferItem>
+     */
+    #[ORM\OneToMany(
+        targetEntity: StockTransferItem::class,
+        mappedBy: 'product'
+    )]
+    private Collection $stockTransferItems;
+
     public function __construct()
     {
         $this->stockEntries = new ArrayCollection();
         $this->stockExits = new ArrayCollection();
+        $this->productSuppliers = new ArrayCollection();
+        $this->warehouseStocks = new ArrayCollection();
+        $this->stockTransferItems = new ArrayCollection();
+
+        $this->active = true;
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -151,6 +225,46 @@ class Product
         return $this;
     }
 
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): static
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /*
+     * Category
+     */
+
     public function getCategory(): ?Category
     {
         return $this->category;
@@ -162,6 +276,10 @@ class Product
 
         return $this;
     }
+
+    /*
+     * StockEntry
+     */
 
     /**
      * @return Collection<int, StockEntry>
@@ -192,6 +310,10 @@ class Product
         return $this;
     }
 
+    /*
+     * StockExit
+     */
+
     /**
      * @return Collection<int, StockExit>
      */
@@ -217,6 +339,95 @@ class Product
                 $stockExit->setProduct(null);
             }
         }
+
+        return $this;
+    }
+
+    /*
+     * ProductSupplier
+     */
+
+    /**
+     * @return Collection<int, ProductSupplier>
+     */
+    public function getProductSuppliers(): Collection
+    {
+        return $this->productSuppliers;
+    }
+
+    public function addProductSupplier(ProductSupplier $productSupplier): static
+    {
+        if (!$this->productSuppliers->contains($productSupplier)) {
+            $this->productSuppliers->add($productSupplier);
+            $productSupplier->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductSupplier(ProductSupplier $productSupplier): static
+    {
+        $this->productSuppliers->removeElement($productSupplier);
+
+        return $this;
+    }
+
+    /*
+     * WarehouseStock
+     */
+
+    /**
+     * @return Collection<int, WarehouseStock>
+     */
+    public function getWarehouseStocks(): Collection
+    {
+        return $this->warehouseStocks;
+    }
+
+    public function addWarehouseStock(WarehouseStock $warehouseStock): static
+    {
+        if (!$this->warehouseStocks->contains($warehouseStock)) {
+            $this->warehouseStocks->add($warehouseStock);
+            $warehouseStock->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWarehouseStock(WarehouseStock $warehouseStock): static
+    {
+        $this->warehouseStocks->removeElement($warehouseStock);
+
+        return $this;
+    }
+
+    /*
+     * StockTransferItem
+     */
+
+    /**
+     * @return Collection<int, StockTransferItem>
+     */
+    public function getStockTransferItems(): Collection
+    {
+        return $this->stockTransferItems;
+    }
+
+    public function addStockTransferItem(
+        StockTransferItem $stockTransferItem
+    ): static {
+        if (!$this->stockTransferItems->contains($stockTransferItem)) {
+            $this->stockTransferItems->add($stockTransferItem);
+            $stockTransferItem->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStockTransferItem(
+        StockTransferItem $stockTransferItem
+    ): static {
+        $this->stockTransferItems->removeElement($stockTransferItem);
 
         return $this;
     }

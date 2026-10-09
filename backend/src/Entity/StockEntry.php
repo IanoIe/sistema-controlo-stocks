@@ -5,7 +5,9 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use App\Repository\StockEntryRepository;
+use App\State\StockEntryProcessor;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
@@ -16,6 +18,8 @@ use Symfony\Component\Serializer\Attribute\Groups;
     operations: [
         new GetCollection(),
         new Get(),
+        new Post(processor: StockEntryProcessor::class,
+        ),
     ],
 )]
 
@@ -35,9 +39,17 @@ class StockEntry
     #[Groups(['stock_entry_read', 'stock_entry_write'])]
     private ?\DateTime $dateStockEntry = null;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['stock_entry_read', 'stock_entry_write'])]
+    private ?string $reason = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['stock_entry_read', 'stock_entry_write'])]
+    private ?string $notes = null;
+
     #[ORM\ManyToOne(inversedBy: 'stockEntries')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['stock_entry_read'])]
+    #[Groups(['stock_entry_read', 'stock_entry_write'])]
     private ?Product $product = null;
 
     #[ORM\ManyToOne(inversedBy: 'stockEntries')]
@@ -70,6 +82,28 @@ class StockEntry
     {
         $this->dateStockEntry = $dateStockEntry;
 
+        return $this;
+    }
+
+    public function getReason(): ?string
+    {
+        return $this->reason;
+    }
+
+    public function setReason(?string $reason): static
+    {
+        $this->reason = $reason;
+        return $this;
+    }
+
+    public function getNotes(): ?string
+    {
+        return $this->notes;
+    }
+
+    public function setNotes(?string $notes): static
+    {
+        $this->notes = $notes;
         return $this;
     }
 
