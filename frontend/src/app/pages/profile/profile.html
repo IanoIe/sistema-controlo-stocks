@@ -16,6 +16,8 @@
           <h1 class="text-2xl font-semibold text-gray-900">
             PROFILE SETTINGS
           </h1>
+          <span class="text-7xl">👤</span>
+          <p class="mt-2 text-lg font-medium text-gray-800">{{ user.name }}</p>
         </div>
 
         <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
