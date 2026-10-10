@@ -7,6 +7,21 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use Symfony\Component\Serializer\Attribute\Groups;
+
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            normalizationContext: ['groups' => ['warehouse:read']]
+        ),
+        new Get(
+            normalizationContext: ['groups' => ['warehouse:read']]
+        ),
+    ]
+)]
 #[ORM\Entity]
 #[ORM\Table(name: 'warehouse')]
 class Warehouse
@@ -14,21 +29,27 @@ class Warehouse
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['warehouse:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['warehouse:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['warehouse:read'])]
     private ?string $location = null;
 
     #[ORM\Column]
+    #[Groups(['warehouse:read'])]
     private bool $active = true;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[Groups(['warehouse:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[Groups(['warehouse:read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     /**
