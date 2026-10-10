@@ -6,8 +6,6 @@ import { ProductService } from "../../service/productService";
 import { ActivatedRoute, Route, Router } from "@angular/router";
 
 
-
-
 @Component({
   selector: 'app-product-detail',
   standalone: true,
@@ -16,12 +14,9 @@ import { ActivatedRoute, Route, Router } from "@angular/router";
 })
 
 export class ProductDetail implements OnInit {
-
   product: Product | null = null;
-
   loading = true;
   error = false;
-
   constructor(
     private productService: ProductService,
     private route: ActivatedRoute,
@@ -36,27 +31,20 @@ export class ProductDetail implements OnInit {
         this.error = true;
         return;
       }
-
       const productId = Number(id);
-
       if (isNaN(productId)) {
         console.error('INVALID PRODUCT ID:', id);
         this.loading = false;
         this.error = true;
         return;
       }
-
       console.log('LOADING PRODUCT:', productId);
       this.productService.getProduct(productId).subscribe({
         next: (product) => {
-
         console.log('PRODUCT RECEIVED:', product);
-
         this.product = product;
         this.loading = false;
-
       },
-
       error: (error) => {
         console.error('ERROR LOADING PRODUCT:', error);
         this.loading = false;
@@ -69,9 +57,20 @@ export class ProductDetail implements OnInit {
     if (!this.product) {
       return;
     }
-    this.router.navigate(['/products', this.product.id, 'edit']);
+    const returnTo = this.route.snapshot.queryParamMap.get('returnTo');
+    this.router.navigate(['/products', this.product.id, 'edit'],
+      {
+        queryParams: returnTo ? { returnTo } : {}
+      }
+    );
   }
+
   backToProducts(): void {
-    this.router.navigate(['/products']);
+    const returnTo = this.route.snapshot.queryParamMap.get('returnTo');
+    if (returnTo?.startsWith('/categories/')) {
+      this.router.navigateByUrl(returnTo);
+    } else {
+      this.router.navigate(['/products']);
+    }
   }
 }

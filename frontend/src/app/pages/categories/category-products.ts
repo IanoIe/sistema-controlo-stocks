@@ -1,10 +1,11 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { CommonModule, Location } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ProductService } from '../../service/productService';
 import { Product } from '../../models/product';
 import { Sidebar } from '../../layout/sidebar/sidebar';
+
 
 @Component({
   selector: 'app-category-products',
@@ -17,6 +18,8 @@ export class CategoryProducts implements OnInit {
   categoryId = 0;
   loading = true;
   error = '';
+
+  private readonly router = inject(Router);
 
   constructor(
     private route: ActivatedRoute,
@@ -46,7 +49,6 @@ export class CategoryProducts implements OnInit {
         next: (products: Product[]) => {
           this.products = products;
           this.loading = false;
-
           console.log('Category products loaded successfully:', products);
         },
         error: (error: unknown) => {
@@ -55,5 +57,15 @@ export class CategoryProducts implements OnInit {
           this.loading = false;
         }
       });
+   }
+
+   goBack(): void {
+  const returnTo = this.route.snapshot.queryParamMap.get('returnTo');
+
+  if (returnTo?.startsWith('/categories/')) {
+    this.router.navigateByUrl(returnTo);
+  } else {
+    this.router.navigate(['/categories']);
   }
+}
 }

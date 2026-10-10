@@ -10,32 +10,27 @@
       </p>
 
       <div class="space-y-0.5">
-
         <!-- Dashboard -->
-        <a routerLink="/dashboard"
-           routerLinkActive="bg-violet-700 text-white shadow-sm"
-           [routerLinkActiveOptions]="{ exact: true }"
+        <a routerLink="/dashboard" routerLinkActive="bg-violet-700 text-white shadow-sm" [routerLinkActiveOptions]="{ exact: true }"
            class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
           <span>🏠</span>
           <span>Dashboard</span>
         </a>
-
         <!-- Products -->
-        <a routerLink="/products"
-           routerLinkActive="bg-violet-700 text-white shadow-sm"
-           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+        <a routerLink="/products" [class.bg-violet-700]="activeSection === 'products'" [class.text-white]="activeSection === 'products'"
+          [class.shadow-sm]="activeSection === 'products'" class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors
+          hover:bg-violet-100 hover:text-violet-900">
           <span>📦</span>
           <span>Products</span>
         </a>
 
         <!-- Categories -->
-        <a routerLink="/categories"
-           routerLinkActive="bg-violet-700 text-white shadow-sm"
-           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+        <a routerLink="/categories" [class.bg-violet-700]="activeSection === 'categories'" [class.text-white]="activeSection === 'categories'"
+          [class.shadow-sm]="activeSection === 'categories'" class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors
+          hover:bg-violet-100 hover:text-violet-900">
           <span>🏷️</span>
           <span>Categories</span>
         </a>
-
       </div>
     </div>
 
@@ -46,58 +41,44 @@
       </p>
 
       <div class="space-y-0.5">
-
         <!-- Warehouses -->
-        <a routerLink="/warehouses"
-           routerLinkActive="bg-violet-700 text-white shadow-sm"
-           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+        <a routerLink="/warehouses" routerLinkActive="bg-violet-700 text-white shadow-sm"
+          class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
           <span>🏭</span>
           <span>Warehouses</span>
         </a>
-
         <!-- Entries -->
-        <a routerLink="/entries"
-           routerLinkActive="bg-violet-700 text-white shadow-sm"
-           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+        <a routerLink="/entries" routerLinkActive="bg-violet-700 text-white shadow-sm"
+          class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
           <span>📥</span>
           <span>Entries</span>
         </a>
-
         <!-- Exits -->
-        <a routerLink="/exit"
-           routerLinkActive="bg-violet-700 text-white shadow-sm"
-           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+        <a routerLink="/exit" routerLinkActive="bg-violet-700 text-white shadow-sm"
+          class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
           <span>📤</span>
           <span>Exits</span>
         </a>
-
         <!-- Transfers -->
-        <a routerLink="/transfers"
-           routerLinkActive="bg-violet-700 text-white shadow-sm"
-           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+        <a routerLink="/transfers" routerLinkActive="bg-violet-700 text-white shadow-sm"
+          class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
           <span>🔄</span>
           <span>Transfers</span>
         </a>
-
         <!-- Stock Alerts -->
-        <a routerLink="/alerts"
-           routerLinkActive="bg-violet-700 text-white shadow-sm"
-           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+        <a routerLink="/alerts" routerLinkActive="bg-violet-700 text-white shadow-sm"
+          class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
           <span>⚠️</span>
           <span>Stock Alerts</span>
         </a>
-
       </div>
     </div>
-
     <!-- MANAGEMENT -->
     <div>
       <p class="mb-3 px-3 text-lg font-bold uppercase tracking-wider text-gray-700 text-center">
         Management
       </p>
-
       <div class="space-y-0.5">
-
         <!-- Suppliers -->
         <a routerLink="/suppliers"
            routerLinkActive="bg-violet-700 text-white shadow-sm"
@@ -105,54 +86,39 @@
           <span>🚚</span>
           <span>Suppliers</span>
         </a>
-
         <!-- Users -->
-        <a routerLink="/users"
-           routerLinkActive="bg-violet-700 text-white shadow-sm"
-           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+        <a routerLink="/users" routerLinkActive="bg-violet-700 text-white shadow-sm"
+          class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
           <span>👥</span>
           <span>Users</span>
         </a>
-
         <!-- Stock History -->
-        <a routerLink="/histories"
-           routerLinkActive="bg-violet-700 text-white shadow-sm"
+        <a routerLink="/histories" routerLinkActive="bg-violet-700 text-white shadow-sm"
            class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
           <span>📜</span>
           <span>Stock History</span>
         </a>
-
         <!-- Reports -->
-        <a routerLink="/reports"
-           routerLinkActive="bg-violet-700 text-white shadow-sm"
-           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+        <a routerLink="/reports" routerLinkActive="bg-violet-700 text-white shadow-sm"
+          class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
           <span>📊</span>
           <span>Reports</span>
         </a>
-
         <!-- Audit Logs -->
-        <a routerLink="/audit-logs"
-           routerLinkActive="bg-violet-700 text-white shadow-sm"
-           class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+        <a routerLink="/audit-logs" routerLinkActive="bg-violet-700 text-white shadow-sm"
+          class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
           <span>🔎</span>
           <span>Audit Logs</span>
         </a>
-
       </div>
     </div>
-
   </nav>
-
   <!-- Profile -->
   <div class="border-t border-violet-200 p-3">
-
-    <a routerLink="/profile"
-       routerLinkActive="bg-violet-700 text-white shadow-sm"
-       class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+    <a routerLink="/profile" routerLinkActive="bg-violet-700 text-white shadow-sm"
+      class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
       <span>👤</span>
       <span>Profile</span>
     </a>
-
   </div>
-
 </aside>

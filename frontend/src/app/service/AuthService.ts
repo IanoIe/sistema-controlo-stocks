@@ -26,7 +26,9 @@ export class AuthService {
   private readonly apiUrl = environment.apiUrl;
 
   private readonly authState$ =
-    new BehaviorSubject<boolean>(false);
+    new BehaviorSubject<boolean>(
+      !!localStorage.getItem('token')
+    );
 
   private readonly user$ =
     new BehaviorSubject<User | null>(null);

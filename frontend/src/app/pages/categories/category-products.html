@@ -9,9 +9,10 @@
       <!-- Header -->
       <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <a routerLink="/categories" class="mb-3 inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800">
-            &larr; Back to Categories
-          </a>
+          <!-- Back button -->
+          <button type="button" (click)="goBack()" class="mb-3 inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800">
+            &larr; Back
+          </button>
           <h1 class="text-3xl font-bold tracking-tight text-gray-900">
             Category Products
           </h1>
@@ -20,6 +21,7 @@
           </p>
         </div>
 
+        <!-- Total products -->
         <div class="rounded-lg bg-blue-50 px-4 py-3">
           <span class="text-sm font-medium text-blue-700">
             Total products: {{ products.length }}
@@ -29,7 +31,9 @@
 
       <!-- Loading -->
       <div *ngIf="loading" class="rounded-xl border border-gray-200 bg-white p-10 text-center">
-        <p class="text-sm text-gray-500"> Loading products... </p>
+        <p class="text-sm text-gray-500">
+          Loading products...
+        </p>
       </div>
 
       <!-- Error -->
@@ -37,42 +41,43 @@
         <p class="font-medium text-red-700">
           {{ error }}
         </p>
-
-        <button type="button" (click)="loadProducts()"
-          class="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">
-            Try Again
+        <button type="button" (click)="loadProducts()" class="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">
+          Try Again
         </button>
       </div>
 
       <!-- Products grid -->
       <div *ngIf="!loading && !error && products.length > 0" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <article *ngFor="let product of products"
-          class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+        <article *ngFor="let product of products" class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+          <!-- Product header -->
           <div class="mb-5 flex items-center justify-between">
             <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
               <span class="text-lg font-bold">
                 {{ product.nameProduct.charAt(0).toUpperCase() }}
               </span>
             </div>
-
             <span class="rounded-full px-3 py-1 text-xs font-medium" [ngClass]="product.active
-              ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'">
-                {{ product.active ? 'Active' : 'Inactive' }}
+                ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'">
+              {{ product.active ? 'Active' : 'Inactive' }}
             </span>
           </div>
 
+          <!-- Product name -->
           <h2 class="text-lg font-semibold text-gray-900">
             {{ product.nameProduct }}
           </h2>
 
+          <!-- Product code -->
           <p class="mt-1 text-sm text-gray-500">
             Code: {{ product.codeProduct }}
           </p>
 
+          <!-- Price -->
           <p class="mt-4 text-2xl font-bold text-blue-600">
             {{ product.price }} €
           </p>
 
+          <!-- Stock information -->
           <div class="mt-5 space-y-2 border-t border-gray-100 pt-4">
             <div class="flex items-center justify-between text-sm">
               <span class="text-gray-500">Quantity</span>
@@ -88,13 +93,15 @@
               </span>
             </div>
 
+            <!-- Low stock warning -->
             <div *ngIf="product.quantity <= product.stockMin" class="rounded-lg bg-amber-50 px-3 py-2 text-xs font-medium text-amber-700">
               Low stock warning
             </div>
           </div>
 
+          <!-- View product details -->
           <div class="mt-5">
-            <a [routerLink]="['/products', product.id]"
+            <a [routerLink]="['/products', product.id]" [queryParams]="{ returnTo: '/categories/' + categoryId + '/products' }"
               class="block w-full rounded-lg border border-blue-200 px-4 py-2.5 text-center text-sm font-semibold text-blue-600 transition hover:bg-blue-50">
                 View Details
             </a>
@@ -107,7 +114,6 @@
         <h2 class="text-lg font-semibold text-gray-800">
           No products found
         </h2>
-
         <p class="mt-2 text-sm text-gray-500">
           This category does not contain any products yet.
         </p>
@@ -116,7 +122,6 @@
           Back to Categories
         </a>
       </div>
-
     </div>
   </main>
 </div>
