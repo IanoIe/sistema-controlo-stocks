@@ -16,25 +16,75 @@ export class Warehouses implements OnInit {
   private readonly warehouseService = inject(WarehouseService);
 
   warehouses: Warehouse[] = [];
+
   searchTerm = '';
+  appliedSearchTerm = '';
+
   loading = false;
   errorMessage = '';
+
+  showAddWarehouseModal = false;
+  showViewWarehouseModal = false;
+  showEditWarehouseModal = false;
+
+  newWarehouse = {
+    name: '',
+    location: '',
+    active: true
+  };
+
+  selectedWarehouse: Warehouse | null = null;
+
+  editWarehouseData = {
+    name: '',
+    location: '',
+    active: true
+  };
 
   ngOnInit(): void {
     this.loadWarehouses();
   }
 
+  // SEARCH
+  searchWarehouses(): void {
+    this.appliedSearchTerm = this.searchTerm.trim();
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.appliedSearchTerm = '';
+  }
+
+
+  // LOAD WAREHOUSES
   loadWarehouses(): void {
     this.loading = true;
     this.errorMessage = '';
 
     this.warehouseService.getWarehouses().subscribe({
-      next: (data) => {
-        console.log('Warehouses recebidos:', data);
+      next: (response: any) => {
+        console.log('Warehouses recebidos:', response);
 
-        this.warehouses = data;
+        // API Platform pode devolver uma coleção Hydra.
+        const items = Array.isArray(response)
+          ? response
+          : response?.member;
+
+        if (!Array.isArray(items)) {
+          console.error('Formato inesperado da resposta:', response);
+
+          this.warehouses = [];
+          this.errorMessage =
+            'A resposta da API não contém uma lista válida de warehouses.';
+
+          this.loading = false;
+          return;
+        }
+
+        this.warehouses = items;
         this.loading = false;
       },
+
       error: (error) => {
         console.error('Error loading warehouses:', error);
 
@@ -48,18 +98,21 @@ export class Warehouses implements OnInit {
     });
   }
 
-  get filteredWarehouses(): Warehouse[] {
-    const term = this.searchTerm.trim().toLowerCase();
+  // FILTERED LIST
 
-    if (!term) {
-      return this.warehouses;
-    }
+get filteredWarehouses(): Warehouse[] {
+  const term = this.appliedSearchTerm.trim().toLowerCase();
 
-    return this.warehouses.filter(warehouse =>
-      warehouse.name.toLowerCase().includes(term) ||
-      warehouse.location.toLowerCase().includes(term)
-    );
+  if (!term) {
+    return this.warehouses;
   }
+
+  return this.warehouses.filter(warehouse =>
+    (warehouse.name ?? '').toLowerCase().startsWith(term)
+  );
+}
+
+  // STATISTICS
 
   get totalWarehouses(): number {
     return this.warehouses.length;
@@ -77,15 +130,148 @@ export class Warehouses implements OnInit {
     return warehouse.id;
   }
 
-  viewWarehouse(warehouse: Warehouse): void {
-    console.log('View warehouse:', warehouse.id);
+  // CREATE WAREHOUSE
+
+  createWarehouse(): void {
+    const name = this.newWarehouse.name.trim();
+    const location = this.newWarehouse.location.trim();
+
+    if (!name || !location) {
+      this.errorMessage = 'Name and location are required.';
+      return;
+    }
+
+    this.loading = true;
+    this.errorMessage = '';
+
+    this.warehouseService.createWarehouse({
+      name,
+      location,
+      active: this.newWarehouse.active
+    }).subscribe({
+      next: (warehouse) => {
+        console.log('Warehouse criado:', warehouse);
+
+        this.showAddWarehouseModal = false;
+
+        this.newWarehouse = {
+          name: '',
+          location: '',
+          active: true
+        };
+
+        this.loadWarehouses();
+      },
+
+      error: (error) => {
+        console.error('Erro ao criar warehouse:', error);
+
+        this.errorMessage =
+          error.error?.detail ??
+          error.error?.message ??
+          'Unable to create warehouse.';
+
+        this.loading = false;
+      }
+    });
   }
 
-  editWarehouse(warehouse: Warehouse): void {
-    console.log('Edit warehouse:', warehouse.id);
+  // VIEW WAREHOUSE
+
+  viewWarehouse(warehouse: Warehouse): void {
+    this.selectedWarehouse = warehouse;
+    this.showViewWarehouseModal = true;
   }
+
+  closeViewWarehouse(): void {
+    this.showViewWarehouseModal = false;
+    this.selectedWarehouse = null;
+  }
+
+  // ADD WAREHOUSE MODAL
 
   addWarehouse(): void {
-    console.log('Add warehouse');
+    this.newWarehouse = {
+      name: '',
+      location: '',
+      active: true
+    };
+
+    this.errorMessage = '';
+    this.showAddWarehouseModal = true;
+  }
+
+  closeAddWarehouse(): void {
+    this.showAddWarehouseModal = false;
+  }
+
+  // EDIT WAREHOUSE
+
+  editWarehouse(warehouse: Warehouse): void {
+    this.selectedWarehouse = warehouse;
+
+    this.editWarehouseData = {
+      name: warehouse.name,
+      location: warehouse.location,
+      active: warehouse.active
+    };
+
+    this.errorMessage = '';
+    this.showEditWarehouseModal = true;
+  }
+
+  closeEditWarehouse(): void {
+    this.showEditWarehouseModal = false;
+    this.selectedWarehouse = null;
+  }
+
+  saveWarehouseChanges(): void {
+    if (!this.selectedWarehouse) {
+      this.errorMessage = 'No warehouse selected.';
+      return;
+    }
+
+    const id = this.selectedWarehouse.id;
+
+    const payload = {
+      name: this.editWarehouseData.name.trim(),
+      location: this.editWarehouseData.location.trim(),
+      active: this.editWarehouseData.active
+    };
+
+    if (!payload.name || !payload.location) {
+      this.errorMessage = 'Name and location are required.';
+      return;
+    }
+
+    this.loading = true;
+    this.errorMessage = '';
+
+    this.warehouseService.updateWarehouse(id, payload).subscribe({
+      next: (updatedWarehouse) => {
+        console.log('Warehouse updated:', updatedWarehouse);
+
+        this.warehouses = this.warehouses.map(warehouse =>
+          warehouse.id === id
+            ? { ...warehouse, ...updatedWarehouse }
+            : warehouse
+        );
+
+        this.showEditWarehouseModal = false;
+        this.selectedWarehouse = null;
+        this.loading = false;
+      },
+
+      error: (error) => {
+        console.error('Error updating warehouse:', error);
+
+        this.errorMessage =
+          error.error?.detail ??
+          error.error?.message ??
+          'Unable to update warehouse.';
+
+        this.loading = false;
+      }
+    });
   }
 }

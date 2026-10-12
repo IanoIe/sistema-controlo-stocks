@@ -1,4 +1,3 @@
-
 <div class="min-h-screen w-full flex bg-gray-50">
   <!-- Sidebar -->
   <app-sidebar></app-sidebar>
@@ -20,16 +19,20 @@
         </p>
       </div>
 
-      <button type="button" (click)="addWarehouse()" class="inline-flex items-center justify-center gap-2
-        rounded-xl bg-violet-700 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-violet-800
-        focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2">
+      <button
+        type="button"
+        (click)="addWarehouse()"
+        class="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-700 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-violet-800 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2">
         <span class="text-xl">+</span>
-          Add Warehouse
+        Add Warehouse
       </button>
     </header>
 
     <!-- Statistics -->
-    <section class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-label="Warehouse statistics">
+    <section
+      class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3"
+      aria-label="Warehouse statistics">
+
       <!-- Total -->
       <article class="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
@@ -40,9 +43,11 @@
             🏭
           </div>
         </div>
+
         <p class="mt-4 text-3xl font-bold text-gray-800">
           {{ totalWarehouses }}
         </p>
+
         <p class="mt-1 text-sm text-gray-500">
           Registered locations
         </p>
@@ -54,43 +59,95 @@
           <p class="text-sm font-medium text-gray-500">
             Active Warehouses
           </p>
-          <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-100 text-2xl"> ✓ </div>
+          <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-100 text-2xl">
+            ✓
+          </div>
         </div>
-        <p class="mt-4 text-3xl font-bold text-green-700"> {{ activeWarehouses }} </p>
-        <p class="mt-1 text-sm text-gray-500"> Currently operational </p>
+
+        <p class="mt-4 text-3xl font-bold text-green-700">
+          {{ activeWarehouses }}
+        </p>
+
+        <p class="mt-1 text-sm text-gray-500">
+          Currently operational
+        </p>
       </article>
 
       <!-- Inactive -->
       <article class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
-          <p class="text-sm font-medium text-gray-500"> Inactive Warehouses </p>
-          <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100 text-2xl"> ⏸️ </div>
+          <p class="text-sm font-medium text-gray-500">
+            Inactive Warehouses
+          </p>
+          <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100 text-2xl">
+            ⏸️
+          </div>
         </div>
-        <p class="mt-4 text-3xl font-bold text-gray-700"> {{ inactiveWarehouses }} </p>
-        <p class="mt-1 text-sm text-gray-500"> Currently inactive </p>
+
+        <p class="mt-4 text-3xl font-bold text-gray-700">
+          {{ inactiveWarehouses }}
+        </p>
+
+        <p class="mt-1 text-sm text-gray-500">
+          Currently inactive
+        </p>
       </article>
     </section>
 
     <!-- Warehouse list -->
     <section class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
       <!-- Table header -->
       <div class="flex flex-col gap-4 border-b border-gray-100 p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 class="text-lg font-bold text-gray-800"> Warehouse List </h2>
-          <p class="mt-1 text-sm text-gray-500"> View and manage your registered warehouses.</p>
+          <h2 class="text-lg font-bold text-gray-800">
+            Warehouse List
+          </h2>
+          <p class="mt-1 text-sm text-gray-500">
+            View and manage your registered warehouses.
+          </p>
         </div>
 
-        <!-- Search -->
-        <div class="relative w-full sm:max-w-sm">
-          <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-            🔍
-          </span>
-          <input type="search" [(ngModel)]="searchTerm" placeholder="Search name or location..." aria-label="Search warehouses"
-            class="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-10 pr-4 text-sm text-gray-700 outline-none transition
-            placeholder:text-gray-400 focus:border-violet-400 focus:bg-white
-            focus:ring-2 focus:ring-violet-100" />
+        <!-- Search controls -->
+        <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+
+          <div class="relative min-w-0 flex-1 sm:w-72">
+            <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+              🔍
+            </span>
+
+            <input
+  type="search"
+  [(ngModel)]="searchTerm"
+  (ngModelChange)="searchWarehouses()"
+  placeholder="Search warehouses..."
+  aria-label="Search warehouses"
+  class="w-full rounded-xl border border-gray-200
+         bg-gray-50 py-3 pl-10 pr-4 text-sm text-gray-700
+         outline-none transition placeholder:text-gray-400
+         focus:border-violet-400 focus:bg-white
+         focus:ring-2 focus:ring-violet-100"
+/>
+          </div>
+
+          <button
+            type="button"
+            (click)="searchWarehouses()"
+            class="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-800 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2">
+            <span>🔍</span>
+            Search
+          </button>
+
+          <button
+            *ngIf="searchTerm || appliedSearchTerm"
+            type="button"
+            (click)="clearSearch()"
+            class="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-600 transition hover:bg-gray-50">
+            Clear
+          </button>
         </div>
       </div>
+      <!-- Fim do cabeçalho da tabela -->
 
       <!-- Loading -->
       <div *ngIf="loading" class="p-12 text-center text-gray-500">
@@ -98,9 +155,17 @@
       </div>
 
       <!-- Error -->
-      <div *ngIf="!loading && errorMessage" class="m-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700" role="alert">
+      <div
+        *ngIf="!loading && errorMessage"
+        class="m-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+        role="alert">
+
         <p>{{ errorMessage }}</p>
-        <button type="button" (click)="loadWarehouses()" class="mt-3 font-semibold underline">
+
+        <button
+          type="button"
+          (click)="loadWarehouses()"
+          class="mt-3 font-semibold underline">
           Try again
         </button>
       </div>
@@ -108,12 +173,21 @@
       <!-- Table -->
       <div *ngIf="!loading && !errorMessage" class="overflow-x-auto">
         <table class="w-full text-left text-sm">
+
           <thead class="bg-violet-50/70 text-xs uppercase tracking-wider text-gray-500">
             <tr>
-              <th scope="col" class="px-6 py-4 font-semibold"> Warehouse </th>
-              <th scope="col" class="px-6 py-4 font-semibold"> Location </th>
-              <th scope="col" class="px-6 py-4 font-semibold"> Created At </th>
-              <th scope="col" class="px-6 py-4 font-semibold"> Status </th>
+              <th scope="col" class="px-6 py-4 font-semibold">
+                Warehouse
+              </th>
+              <th scope="col" class="px-6 py-4 font-semibold">
+                Location
+              </th>
+              <th scope="col" class="px-6 py-4 font-semibold">
+                Created At
+              </th>
+              <th scope="col" class="px-6 py-4 font-semibold">
+                Status
+              </th>
               <th scope="col" class="px-6 py-4 text-right font-semibold">
                 Actions
               </th>
@@ -121,7 +195,11 @@
           </thead>
 
           <tbody class="divide-y divide-gray-100">
-            <tr *ngFor="let warehouse of filteredWarehouses; trackBy: trackById" class="transition hover:bg-violet-50/40">
+
+            <tr
+              *ngFor="let warehouse of filteredWarehouses; trackBy: trackById"
+              class="transition hover:bg-violet-50/40">
+
               <!-- Warehouse name -->
               <td class="whitespace-nowrap px-6 py-4">
                 <div class="flex items-center gap-3">
@@ -130,8 +208,9 @@
                   </div>
 
                   <div>
-                    <p class="font-semibold text-gray-800"> {{ warehouse.name }} </p>
-                    <p class="mt-1 text-xs text-gray-400"> ID: {{ warehouse.id }} </p>
+                    <p class="font-semibold text-gray-800">
+                      {{ warehouse.name }}
+                    </p>
                   </div>
                 </div>
               </td>
@@ -151,9 +230,14 @@
 
               <!-- Status -->
               <td class="whitespace-nowrap px-6 py-4">
-                <span class="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold"
+                <span
+                  class="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold"
                   [ngClass]="warehouse.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'">
-                  <span class="h-2 w-2 rounded-full" [ngClass]="warehouse.active ? 'bg-green-500' : 'bg-gray-400'"> </span>
+
+                  <span
+                    class="h-2 w-2 rounded-full"
+                    [ngClass]="warehouse.active ? 'bg-green-500' : 'bg-gray-400'">
+                  </span>
 
                   {{ warehouse.active ? 'Active' : 'Inactive' }}
                 </span>
@@ -162,15 +246,25 @@
               <!-- Actions -->
               <td class="whitespace-nowrap px-6 py-4">
                 <div class="flex justify-end gap-2">
-                  <button type="button" (click)="viewWarehouse(warehouse)" [attr.aria-label]="'View ' + warehouse.name" title="View warehouse"
+
+                  <button
+                    type="button"
+                    (click)="viewWarehouse(warehouse)"
+                    [attr.aria-label]="'View ' + warehouse.name"
+                    title="View warehouse"
                     class="rounded-lg border border-gray-200 p-2 text-gray-500 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700">
                     👁️
                   </button>
 
-                  <button type="button" (click)="editWarehouse(warehouse)" [attr.aria-label]="'Edit ' + warehouse.name" title="Edit warehouse"
+                  <button
+                    type="button"
+                    (click)="editWarehouse(warehouse)"
+                    [attr.aria-label]="'Edit ' + warehouse.name"
+                    title="Edit warehouse"
                     class="rounded-lg border border-gray-200 p-2 text-gray-500 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700">
                     ✏️
                   </button>
+
                 </div>
               </td>
             </tr>
@@ -179,16 +273,127 @@
             <tr *ngIf="filteredWarehouses.length === 0">
               <td colspan="5" class="px-6 py-14 text-center">
                 <div class="text-4xl">🏭</div>
-                <p class="mt-3 font-semibold text-gray-700"> No warehouses found </p>
-                <p class="mt-1 text-sm text-gray-500"> Try another search term. </p>
+
+                <p class="mt-3 font-semibold text-gray-700">
+                  No warehouses found
+                </p>
+
+                <p class="mt-1 text-sm text-gray-500">
+                  Try another search term.
+                </p>
               </td>
             </tr>
+
           </tbody>
         </table>
       </div>
 
+      <!-- Add Warehouse Modal -->
+      <div
+        *ngIf="showAddWarehouseModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+        (click)="closeAddWarehouse()">
+
+        <div
+          class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="warehouse-modal-title"
+          (click)="$event.stopPropagation()">
+
+          <div class="mb-6 flex items-center justify-between">
+            <div>
+              <h2 id="warehouse-modal-title" class="text-xl font-bold text-gray-800">
+                Add Warehouse
+              </h2>
+
+              <p class="mt-1 text-sm text-gray-500">
+                Enter the warehouse details.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              (click)="closeAddWarehouse()"
+              class="rounded-lg p-2 text-gray-500 hover:bg-gray-100"
+              aria-label="Close modal">
+              ✕
+            </button>
+          </div>
+
+          <form
+            #warehouseForm="ngForm"
+            (ngSubmit)="createWarehouse()"
+            class="space-y-5">
+
+            <div>
+              <label for="warehouseName" class="mb-2 block text-sm font-medium text-gray-700">
+                Warehouse Name
+              </label>
+
+              <input
+                id="warehouseName"
+                name="name"
+                [(ngModel)]="newWarehouse.name"
+                required
+                maxlength="255"
+                placeholder="e.g. Main Warehouse"
+                class="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100" />
+            </div>
+
+            <div>
+              <label for="warehouseLocation" class="mb-2 block text-sm font-medium text-gray-700">
+                Location
+              </label>
+
+              <input
+                id="warehouseLocation"
+                name="location"
+                [(ngModel)]="newWarehouse.location"
+                required
+                maxlength="255"
+                placeholder="e.g. Lisbon"
+                class="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100" />
+            </div>
+
+            <div class="flex items-center gap-3">
+              <input
+                id="warehouseActive"
+                type="checkbox"
+                name="active"
+                [(ngModel)]="newWarehouse.active"
+                class="h-4 w-4 rounded border-gray-300 text-violet-700 focus:ring-violet-500" />
+
+              <label for="warehouseActive" class="text-sm text-gray-700">
+                Warehouse is active
+              </label>
+            </div>
+
+            <div class="flex justify-end gap-3 border-t border-gray-100 pt-5">
+              <button
+                type="button"
+                (click)="closeAddWarehouse()"
+                class="rounded-xl border border-gray-200 px-4 py-2.5 font-medium text-gray-700 hover:bg-gray-50">
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                [disabled]="warehouseForm.invalid || loading"
+                class="rounded-xl bg-violet-700 px-5 py-2.5 font-semibold text-white hover:bg-violet-800 disabled:opacity-50">
+                {{ loading ? 'Creating...' : 'Create Warehouse' }}
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
       <!-- Footer -->
-      <div *ngIf="!loading && !errorMessage" class="flex flex-col gap-2 border-t border-gray-100 bg-gray-50/50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+      <div
+        *ngIf="!loading && !errorMessage"
+        class="flex flex-col gap-2 border-t border-gray-100 bg-gray-50/50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+
         <p class="text-sm text-gray-500">
           Showing
           <span class="font-semibold text-gray-700">
@@ -201,10 +406,172 @@
           warehouses
         </p>
 
-        <button *ngIf="searchTerm" type="button" (click)="searchTerm = ''" class="text-sm font-medium text-violet-700 hover:text-violet-900">
+        <button
+          *ngIf="searchTerm"
+          type="button"
+          (click)="searchTerm = ''"
+          class="text-sm font-medium text-violet-700 hover:text-violet-900">
           Clear search
         </button>
       </div>
+
     </section>
+    <!-- Fim da secção Warehouse List -->
+
+    <!-- View Warehouse Modal -->
+    <div
+      *ngIf="showViewWarehouseModal && selectedWarehouse as warehouse"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      (click)="closeViewWarehouse()">
+
+      <div
+        class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="view-warehouse-title"
+        (click)="$event.stopPropagation()">
+
+        <div class="mb-6 flex items-center justify-between">
+          <h2 id="view-warehouse-title" class="text-xl font-bold text-gray-800">
+            Warehouse Details
+          </h2>
+
+          <button
+            type="button"
+            (click)="closeViewWarehouse()"
+            class="rounded-lg p-2 text-gray-500 hover:bg-gray-100"
+            aria-label="Close">
+            ✕
+          </button>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <p class="text-sm text-gray-500">Name</p>
+            <p class="font-semibold text-gray-800">
+              {{ warehouse.name }}
+            </p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-500">Location</p>
+            <p class="font-semibold text-gray-800">
+              {{ warehouse.location }}
+            </p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-500">Created At</p>
+            <p class="font-semibold text-gray-800">
+              {{ warehouse.createdAt | date:'dd/MM/yyyy' }}
+            </p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-500">Status</p>
+
+            <span
+              class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+              [ngClass]="warehouse.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'">
+              {{ warehouse.active ? 'Active' : 'Inactive' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="mt-6 flex justify-end">
+          <button
+            type="button"
+            (click)="closeViewWarehouse()"
+            class="rounded-xl bg-violet-700 px-5 py-2.5 font-semibold text-white hover:bg-violet-800">
+            Close
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Edit Warehouse Modal -->
+    <div
+      *ngIf="showEditWarehouseModal && selectedWarehouse"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      (click)="closeEditWarehouse()">
+
+      <div
+        class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="edit-warehouse-title"
+        (click)="$event.stopPropagation()">
+
+        <h2 id="edit-warehouse-title" class="mb-6 text-xl font-bold text-gray-800">
+          Edit Warehouse
+        </h2>
+
+        <form
+          #editForm="ngForm"
+          (ngSubmit)="saveWarehouseChanges()"
+          class="space-y-5">
+
+          <div>
+            <label for="editName" class="mb-2 block text-sm font-medium text-gray-700">
+              Warehouse Name
+            </label>
+
+            <input
+              id="editName"
+              name="editName"
+              [(ngModel)]="editWarehouseData.name"
+              required
+              maxlength="255"
+              class="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100" />
+          </div>
+
+          <div>
+            <label for="editLocation" class="mb-2 block text-sm font-medium text-gray-700">
+              Location
+            </label>
+
+            <input
+              id="editLocation"
+              name="editLocation"
+              [(ngModel)]="editWarehouseData.location"
+              required
+              maxlength="255"
+              class="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100" />
+          </div>
+
+          <div class="flex items-center gap-3">
+            <input
+              id="editActive"
+              type="checkbox"
+              name="editActive"
+              [(ngModel)]="editWarehouseData.active"
+              class="h-4 w-4 rounded border-gray-300 text-violet-700" />
+
+            <label for="editActive" class="text-sm text-gray-700">
+              Warehouse is active
+            </label>
+          </div>
+
+          <div class="flex justify-end gap-3 border-t border-gray-100 pt-5">
+            <button
+              type="button"
+              (click)="closeEditWarehouse()"
+              class="rounded-xl border border-gray-200 px-4 py-2.5 text-gray-700 hover:bg-gray-50">
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              [disabled]="editForm.invalid || loading"
+              class="rounded-xl bg-violet-700 px-5 py-2.5 font-semibold text-white hover:bg-violet-800 disabled:opacity-50">
+              {{ loading ? 'Saving...' : 'Save Changes' }}
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
   </main>
 </div>
