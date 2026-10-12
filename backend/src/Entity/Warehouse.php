@@ -10,7 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use Symfony\Component\Serializer\Attribute\Groups;
+use ApiPlatform\Metadata\Post;
 
 #[ApiResource(
     operations: [
@@ -19,6 +21,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
         ),
         new Get(
             normalizationContext: ['groups' => ['warehouse:read']]
+        ),
+        new Post(
+            normalizationContext: ['groups' => ['warehouse:read']],
+            denormalizationContext: ['groups' => ['warehouse:write']]
+        ),
+        new Patch(
+            normalizationContext: ['groups' => ['warehouse:read']],
+            denormalizationContext: ['groups' => ['warehouse:write']]
         ),
     ]
 )]
@@ -33,15 +43,15 @@ class Warehouse
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['warehouse:read'])]
+    #[Groups(['warehouse:read', 'warehouse:write'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['warehouse:read'])]
+    #[Groups(['warehouse:read', 'warehouse:write'])]
     private ?string $location = null;
 
     #[ORM\Column]
-    #[Groups(['warehouse:read'])]
+    #[Groups(['warehouse:read', 'warehouse:write'])]
     private bool $active = true;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
