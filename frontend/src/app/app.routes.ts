@@ -102,7 +102,7 @@ export const routes: Routes = [
     path: 'transfers',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./pages/transfers/transfers').then(m => m.Transfers)
+      import('./pages/stock-transfers/transfers').then(m => m.Transfers)
   },
 
   // Stock Alerts
@@ -154,7 +154,7 @@ export const routes: Routes = [
     path: 'audit-logs',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./pages/audit-logs/audit-logs').then(m => m.AuditLogs)
+      import('./pages/auditLogs/auditLogs').then(m => m.AuditLogs)
   },
 
   // =========================
