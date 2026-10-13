@@ -7,6 +7,33 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use Symfony\Component\Serializer\Attribute\Groups;
+use ApiPlatform\Metadata\Post;
+
+
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            normalizationContext: ['groups' => ['stock_transfer:read']]
+        ),
+        new Get(
+            normalizationContext: ['groups' => ['stock_transfer:read']]
+        ),
+        new Post(
+            normalizationContext: ['groups' => ['stock_transfer:read']],
+            denormalizationContext: ['groups' => ['stock_transfer:write']]
+        ),
+        new Patch(
+            normalizationContext: ['groups' => ['stock_transfer:read']],
+            denormalizationContext: ['groups' => ['stock_transfer:write']]
+        ),
+    ]
+)]
+
 #[ORM\Entity]
 #[ORM\Table(name: 'stock_transfer')]
 class StockTransfer
@@ -14,30 +41,34 @@ class StockTransfer
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['stock_transfer:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[Groups(['stock_transfer:read'])]
     private ?\DateTimeImmutable $transferDate = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['stock_transfer:read'])]
     private ?string $status = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['stock_transfer:read', 'stock_transfer:write'])]
     private ?string $notes = null;
 
-    // Armazém de origem
     #[ORM\ManyToOne(inversedBy: 'outgoingTransfers')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['stock_transfer:read', 'stock_transfer:write'])]
     private ?Warehouse $sourceWarehouse = null;
 
-    // Armazém de destino
     #[ORM\ManyToOne(inversedBy: 'incomingTransfers')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['stock_transfer:read', 'stock_transfer:write'])]
     private ?Warehouse $destinationWarehouse = null;
 
-    // Utilizador que realizou a transferência
     #[ORM\ManyToOne(inversedBy: 'stockTransfers')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['stock_transfer:read'])]
     private ?User $user = null;
 
     /**
@@ -51,6 +82,7 @@ class StockTransfer
         cascade: ['persist'],
         orphanRemoval: true
     )]
+    #[Groups(['stock_transfer:read', 'stock_transfer:write'])]
     private Collection $stockTransferItems;
 
     public function __construct()
