@@ -1,0 +1,152 @@
+<div class="flex min-h-screen w-full bg-gray-50">
+
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Main Content -->
+  <main class="min-w-0 flex-1 p-5 md:p-8">
+
+    <!-- Header -->
+    <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800">
+          Audit History
+        </h1>
+        <p class="mt-2 text-sm text-gray-500">
+          View the history of activities and changes made in the system.
+        </p>
+      </div>
+
+      <button type="button" (click)="loadAuditLogs()" [disabled]="loading" class="rounded-lg bg-blue-600 px-5 py-2.5 font-medium text-white transition hover:bg-blue-700 disabled:opacity-50">
+        {{ loading ? 'Loading...' : 'Refresh Records' }}
+      </button>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <p class="text-sm font-medium text-gray-500"> Total Records </p>
+        <p class="mt-2 text-3xl font-bold text-gray-800"> {{ auditLogs.length }} </p>
+      </div>
+
+      <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <p class="text-sm font-medium text-gray-500"> Selected Record </p>
+        <p class="mt-2 text-3xl font-bold text-blue-600"> {{ expandedLogId !== null ? '#' + expandedLogId : 'None' }} </p>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="rounded-xl border border-gray-200 bg-white p-10 text-center shadow-sm">
+      <div class="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600"></div>
+      <p class="mt-4 text-sm text-gray-500"> Loading audit records... </p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="!loading && errorMessage" class="rounded-xl border border-red-200 bg-red-50 p-5 text-sm text-red-700"> {{ errorMessage }}
+      <button type="button" (click)="loadAuditLogs()" class="ml-2 font-semibold underline">
+        Try Again
+      </button>
+    </div>
+
+    <!-- Audit Logs Table -->
+    <div *ngIf="!loading && !errorMessage" class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <!-- Table Header -->
+          <thead class="border-b border-gray-200 bg-gray-100 text-xs uppercase tracking-wider text-gray-600">
+            <tr>
+              <th class="whitespace-nowrap px-6 py-4">ID</th>
+              <th class="whitespace-nowrap px-6 py-4">Action</th>
+              <th class="whitespace-nowrap px-6 py-4">Entity</th>
+              <th class="whitespace-nowrap px-6 py-4">User</th>
+              <th class="whitespace-nowrap px-6 py-4">Date and Time</th>
+              <th class="whitespace-nowrap px-6 py-4">Changes</th>
+              <th class="whitespace-nowrap px-6 py-4">Details</th>
+            </tr>
+          </thead>
+
+          <!-- Table Body -->
+          <tbody class="divide-y divide-gray-100">
+            <ng-container *ngFor="let log of auditLogs">
+              <!-- Audit Log Row -->
+              <tr class="transition hover:bg-gray-50">
+                <td class="whitespace-nowrap px-6 py-4 font-mono font-semibold text-gray-800"> #{{ log.id }} </td>
+                <td class="whitespace-nowrap px-6 py-4">
+                  <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+                    [ngClass]="{
+                      'bg-green-100 text-green-700': log.action.toUpperCase() === 'CREATE',
+                      'bg-blue-100 text-blue-700': log.action.toUpperCase() === 'UPDATE',
+                      'bg-red-100 text-red-700': log.action.toUpperCase() === 'DELETE',
+                      'bg-gray-100 text-gray-700': !['CREATE', 'UPDATE', 'DELETE'].includes(log.action.toUpperCase())
+                    }">
+                    {{ getActionLabel(log.action) }}
+                  </span>
+                </td>
+                <td class="whitespace-nowrap px-6 py-4 font-medium text-gray-700"> {{ log.entity }} </td>
+                <td class="px-6 py-4 text-gray-600"> {{ log.user?.email || 'Unknown' }} </td>
+                <td class="whitespace-nowrap px-6 py-4 text-gray-500"> {{ formatDate(log.createdAt) }} </td>
+                <td class="whitespace-nowrap px-6 py-4">
+                  <span *ngIf="getChangedFields(log).length > 0; else noChangesBadge" class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
+                    {{ getChangedFields(log).length }}
+                    {{ getChangedFields(log).length === 1 ? 'field' : 'fields' }}
+                  </span>
+                  <ng-template #noChangesBadge>
+                    <span class="text-xs text-gray-400"> No changes </span>
+                  </ng-template>
+                </td>
+                <td class="whitespace-nowrap px-6 py-4">
+                  <button type="button" (click)="toggleDetails(log.id)"
+                    class="rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700">
+                    {{ expandedLogId === log.id ? 'Close' : 'View Details' }}
+                  </button>
+                </td>
+              </tr>
+              <!-- Expanded Audit Details -->
+              <tr *ngIf="expandedLogId === log.id">
+                <td colspan="7" class="border-b border-gray-200 bg-gray-50 px-6 py-6">
+                  <h2 class="mb-1 text-lg font-bold text-gray-800"> Record Details #{{ log.id }} </h2>
+                  <p class="mb-6 text-sm text-gray-500"> {{ getActionLabel(log.action) }} — {{ log.entity }} </p>
+                  <!-- Previous and New Data -->
+                  <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                    <div>
+                      <h3 class="mb-3 font-semibold text-gray-800"> Previous Data </h3>
+                      <pre class="overflow-x-auto whitespace-pre-wrap break-words rounded-lg border border-gray-200 bg-white p-4 text-xs leading-6 text-gray-700">{{ log.oldData === null ? 'No previous data' : (log.oldData | json) }}</pre>
+                    </div>
+                    <div>
+                      <h3 class="mb-3 font-semibold text-gray-800"> New Data </h3>
+                      <pre class="overflow-x-auto whitespace-pre-wrap break-words rounded-lg border border-gray-200 bg-white p-4 text-xs leading-6 text-gray-700">{{ log.newData === null ? 'No new data' : (log.newData | json) }}</pre>
+                    </div>
+                  </div>
+                  <!-- Changed Fields -->
+                  <div class="mt-6">
+                    <h3 class="mb-3 font-semibold text-gray-800"> Changed Fields </h3>
+                    <div *ngIf="getChangedFields(log).length > 0; else noChanges" class="flex flex-wrap gap-2">
+                      <span *ngFor="let field of getChangedFields(log)" class="rounded-md border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-800">
+                        {{ field }}
+                      </span>
+                    </div>
+                    <ng-template #noChanges>
+                      <p class="text-sm text-gray-500"> No changes detected. </p>
+                    </ng-template>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+            <!-- Empty State -->
+            <tr *ngIf="auditLogs.length === 0">
+              <td colspan="7" class="px-6 py-16 text-center">
+                <p class="text-lg font-semibold text-gray-700"> No audit records found  </p>
+                <p class="mt-2 text-sm text-gray-500"> Audit records will appear here when available. </p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Table Footer -->
+      <div class="border-t border-gray-200 bg-gray-50 px-6 py-3">
+        <p class="text-xs text-gray-500"> Total records: {{ auditLogs.length }} </p>
+      </div>
+    </div>
+  </main>
+</div>
