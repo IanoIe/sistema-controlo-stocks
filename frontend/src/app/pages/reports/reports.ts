@@ -23,7 +23,6 @@ import { StockExitService } from '../../service/stockExitService';
   ],
 
   templateUrl: './reports.html',
-  styleUrls: ['./reports.css']
 })
 export class Reports implements OnInit {
 
