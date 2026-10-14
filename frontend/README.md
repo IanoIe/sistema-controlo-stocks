@@ -10,16 +10,16 @@ The frontend communicates with a REST API developed with Symfony and API Platfor
 The application aims to provide a clear and intuitive interface for stock management, helping users monitor inventory levels, track stock movements, and access relevant inventory information.
 
 ## 🚀 Features
-🔐 User authentication and protected routes
-📦 Product management
-📥 Stock entry registration
-📤 Stock exit registration
-⚠️ Low-stock and out-of-stock alerts
-📊 Dashboard with inventory indicators
-📈 Stock movement visualization
-📋 Reports with stock and product information
-🗂️ Product categorization
-🔎 Product search and filtering, where implemented
+- 🔐 User authentication and protected routes
+- 📦 Product management
+- 📥 Stock entry registration
+- 📤 Stock exit registration
+- ⚠️ Low-stock and out-of-stock alerts
+- 📊 Dashboard with inventory indicators
+- 📈 Stock movement visualization
+- 📋 Reports with stock and product information
+- 🗂️ Product categorization
+- 🔎 Product search and filtering, where implemented
 
 ## 🛠️ Technologies
 
@@ -141,29 +141,22 @@ The availability of unit and end-to-end testing depends on the testing tools con
 
 The frontend communicates with the Symfony backend through dedicated Angular services, including services for:
 
-Products
-Stock entries
-Stock exits
+- Products
+- Stock entries
+- Stock exits
 
 The backend is responsible for authentication, data persistence, validation, and inventory-related business rules.
-
 Make sure the backend API URL is configured correctly for your development environment.
-
 Do not store passwords, private keys, JWT signing secrets, or other sensitive credentials in frontend source code.
 
 ## 👨‍💻 Development
 
 To generate a new Angular component, run:
-
 npx ng generate component component-name
-
-
 For more information about Angular CLI commands, visit the official documentation:
-
 Angular CLI Documentation
 
 ## 👤 Author
-
 AC Marvel
 
 Part of the Stock Management System personal project.
