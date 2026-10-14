@@ -35,7 +35,7 @@ The main objectives are to:
 
 ## 🚀 Features
 
-## 📦 Product Management
+### 📦 Product Management
 Create, view, update, and delete products.
 Assign products to categories.
 Store product codes, prices, and quantities.
@@ -44,44 +44,44 @@ Activate or deactivate products.
 Track product creation and update dates.
 Search and filter products by category.
 
-## 📥 Stock Entries
+### 📥 Stock Entries
 Register incoming stock movements.
 Associate entries with products and authenticated users.
 Record quantities, dates, reasons, and notes.
 Automatically increase the product's stock quantity when an entry is registered.
 
-## 📤 Stock Exits
+### 📤 Stock Exits
 Register outgoing stock movements.
 Associate exits with products and authenticated users.
 Record quantities, dates, reasons, and notes.
 Validate stock availability before processing an exit.
 Automatically decrease the product's stock quantity.
 
-## ⚠️ Stock Alerts
+### ⚠️ Stock Alerts
 Identify products with low stock.
 Identify products with no available stock.
 Compare current quantities with minimum stock thresholds.
 
-## 📊 Dashboard
+### 📊 Dashboard
 Display the total number of products.
 Monitor low-stock and out-of-stock products.
 Summarize products by category.
 Display total stock entries and exits.
 Visualize stock movement trends.
 
-## 📋 Reports
+### 📋 Reports
 Summarize products and inventory quantities.
 Display low-stock and out-of-stock totals.
 Summarize stock movements.
 Group products by category.
 Provide a print-friendly reporting option.
 
-## 🔐 Authentication and Security
+### 🔐 Authentication and Security
 Authenticate users through a JWT-based API.
 Protect API endpoints against unauthenticated access.
 Associate stock movements with the authenticated user.
 
-## 🏭 Warehouse and Supplier Management
+### 🏭 Warehouse and Supplier Management
 The backend data model also includes entities for:
 - Warehouses.
 - arehouse transfers.
@@ -91,7 +91,7 @@ The backend data model also includes entities for:
 - Preferred suppliers and supplier-specific costs.
 These entities provide a foundation for extending inventory management across multiple warehouses and suppliers. Their implementation and integration into the complete user interface may evolve during development.
 
-## 📝 Audit Logging
+### 📝 Audit Logging
 An audit log entity is defined to store information about actions, affected entities, previous and new data, timestamps, and associated users.
 The scope and automatic recording of audit events may be expanded as the project develops.
 
@@ -182,8 +182,8 @@ Root README.md — general project documentation.
 Frontend README.md — frontend-specific setup and development instructions.
 Backend README.md — backend-specific setup and configuration instructions.
 
-### 🚀 Getting Started
-Prerequisites
+## 🚀 Getting Started
+### Prerequisites
 Install the following tools before running the application:
 - Node.js and npm, compatible with the installed Angular version.
 - PHP, compatible with the project's Symfony version.
@@ -191,12 +191,12 @@ Install the following tools before running the application:
 - MySQL.
 - Git.
 
-1. Clone the Repository:
+#### 1. Clone the Repository:
 - git clone <https://github.com/IanoIe/sistema-controlo-stocks.git>
 - cd stock-management-system
 - Replace <https://github.com/IanoIe/sistema-controlo-stocks.git> with the URL of your GitHub repository.
 
-2. Start the Backend
+#### 2. Start the Backend
 Open a terminal and navigate to the backend directory:
 - cd backend
 - composer install
@@ -208,7 +208,7 @@ Start the Symfony development server:
 - symfony server:start
 - The backend's actual URL depends on your local configuration.
 
-3. Start the Frontend
+#### 3. Start the Frontend
 Open another terminal:
 - cd frontend
 - npm install
