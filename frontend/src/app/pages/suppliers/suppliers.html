@@ -1,8 +1,319 @@
-<div class="min-h-screen w-full flex bg-gray-50">
+<div class="flex min-h-screen w-full bg-gray-50">
+
   <!-- Sidebar -->
   <app-sidebar></app-sidebar>
 
-  <main>
+  <!-- Main Content -->
+  <main class="min-w-0 flex-1 p-5 md:p-8">
+    <!-- Header -->
+    <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800">
+          Suppliers
+        </h1>
+        <p class="mt-2 text-sm text-gray-500">
+          Manage your suppliers and their contact information.
+        </p>
+      </div>
+
+      <button type="button" (click)="addSupplier()" class="rounded-lg bg-blue-600 px-5 py-2.5 font-medium text-white transition hover:bg-blue-700">
+        + Add Supplier
+      </button>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <p class="text-sm font-medium text-gray-500"> Total Suppliers </p>
+        <p class="mt-2 text-3xl font-bold text-gray-800"> {{ totalSuppliers }} </p>
+      </div>
+
+      <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <p class="text-sm font-medium text-gray-500"> Active Suppliers </p>
+        <p class="mt-2 text-3xl font-bold text-green-600"> {{ activeSuppliers }} </p>
+      </div>
+
+      <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <p class="text-sm font-medium text-gray-500"> Inactive Suppliers </p>
+        <p class="mt-2 text-3xl font-bold text-red-600"> {{ inactiveSuppliers }} </p>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="mb-6 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <form class="flex flex-col gap-3 sm:flex-row" (ngSubmit)="searchSuppliers()">
+        <input type="text" name="searchTerm" [(ngModel)]="searchTerm" (ngModelChange)="searchSuppliers()" placeholder="Search suppliers by name..."
+          class="min-w-0 flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"/>
+        <div class="flex gap-2">
+          <button type="submit" class="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700">
+            Search
+          </button>
+          <button type="button" (click)="clearSearch()" class="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+            Clear
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="rounded-xl border border-gray-200 bg-white p-10 text-center shadow-sm">
+      <p class="text-sm text-gray-500"> Loading suppliers...</p>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="!loading && errorMessage" class="mb-6 rounded-xl border border-red-200 bg-red-50 p-5 text-sm text-red-700">
+      {{ errorMessage }}
+      <button type="button" (click)="loadSuppliers()" class="ml-2 font-semibold underline">
+        Try Again
+      </button>
+    </div>
+
+    <!-- Suppliers Table -->
+    <div *ngIf="!loading && !errorMessage" class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead class="border-b border-gray-200 bg-gray-100 text-xs uppercase tracking-wider text-gray-600">
+            <tr>
+              <th class="whitespace-nowrap px-6 py-4">Name</th>
+              <th class="whitespace-nowrap px-6 py-4">Email</th>
+              <th class="whitespace-nowrap px-6 py-4">Phone</th>
+              <th class="whitespace-nowrap px-6 py-4">Address</th>
+              <th class="whitespace-nowrap px-6 py-4">Tax Number</th>
+              <th class="whitespace-nowrap px-6 py-4">Status</th>
+              <th class="whitespace-nowrap px-6 py-4">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-gray-100">
+            <tr *ngFor="let supplier of filteredSuppliers; trackBy: trackById" class="transition hover:bg-gray-50">
+              <td class="whitespace-nowrap px-6 py-4 font-medium text-gray-800"> {{ supplier.name }} </td>
+              <td class="px-6 py-4 text-gray-600"> {{ supplier.email || '—' }} </td>
+              <td class="whitespace-nowrap px-6 py-4 text-gray-600"> {{ supplier.phone || '—' }} </td>
+              <td class="px-6 py-4 text-gray-600"> {{ supplier.address || '—' }} </td>
+              <td class="whitespace-nowrap px-6 py-4 text-gray-600"> {{ supplier.taxNumber || '—' }} </td>
+              <td class="whitespace-nowrap px-6 py-4">
+                <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold" [ngClass]="supplier.active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
+                  {{ supplier.active ? 'Active' : 'Inactive' }}
+                </span>
+              </td>
+              <td class="whitespace-nowrap px-6 py-4">
+                <button type="button" (click)="viewSupplier(supplier)" class="rounded-lg border border-blue-200 px-3 py-2 text-sm font-medium text-blue-700 hover:bg-blue-50">
+                  View
+                </button>
+                <button type="button" (click)="editSupplier(supplier)" class="rounded-lg border border-amber-200 px-3 py-2 text-sm font-medium text-amber-700 hover:bg-amber-50">
+                  Edit
+                </button>
+              </td>
+            </tr>
+            <!-- Empty State -->
+            <tr *ngIf="filteredSuppliers.length === 0">
+              <td colspan="7" class="px-6 py-16 text-center">
+                <p class="text-lg font-semibold text-gray-700"> No suppliers found </p>
+                <p class="mt-2 text-sm text-gray-500">
+                  Try another search or add a new supplier.
+                </p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer -->
+      <div class="border-t border-gray-200 bg-gray-50 px-6 py-3">
+        <p class="text-xs text-gray-500"> Total suppliers: {{ filteredSuppliers.length }} </p>
+      </div>
+    </div>
+
+    <!-- View Supplier Modal -->
+    <div *ngIf="showViewSupplierModal && selectedSupplier" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" (click)="closeViewSupplier()">
+      <div class="w-full max-w-lg rounded-xl bg-white p-6 shadow-xl" (click)="$event.stopPropagation()">
+        <!-- Modal Header -->
+        <div class="mb-6 flex items-center justify-between">
+          <h2 class="text-xl font-bold text-gray-800"> Supplier Details </h2>
+          <button type="button" (click)="closeViewSupplier()" class="rounded-lg px-3 py-1 text-xl text-gray-500 hover:bg-gray-100 hover:text-gray-800" aria-label="Close" >
+            &times;
+          </button>
+        </div>
+        <!-- Supplier Information -->
+        <div class="space-y-4">
+          <div>
+            <p class="text-sm text-gray-500">Name</p>
+            <p class="font-semibold text-gray-800"> {{ selectedSupplier.name }} </p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-500">Email</p>
+            <p class="text-gray-800"> {{ selectedSupplier.email || 'Not provided' }} </p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-500">Phone</p>
+            <p class="text-gray-800"> {{ selectedSupplier.phone || 'Not provided' }} </p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-500">Address</p>
+            <p class="text-gray-800">{{ selectedSupplier.address || 'Not provided' }}</p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-500">Tax Number</p>
+            <p class="text-gray-800"> {{ selectedSupplier.taxNumber || 'Not provided' }}</p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-500">Status</p>
+            <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold" [ngClass]="selectedSupplier.active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
+              {{ selectedSupplier.active ? 'Active' : 'Inactive' }}
+            </span>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-500">Created At</p>
+            <p class="text-gray-800"> {{ selectedSupplier.createdAt ? (selectedSupplier.createdAt | date:'dd/MM/yyyy') : 'Not available' }} </p>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="mt-8 flex justify-end gap-3">
+          <button type="button" (click)="closeViewSupplier()" class="rounded-lg border border-gray-300 px-5 py-2.5 font-medium text-gray-700 hover:bg-gray-50" >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+<!-- Edit Supplier Modal -->
+<div *ngIf="showEditSupplierModal && selectedSupplier" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+  (click)="closeEditSupplier()">
+
+  <div
+    class="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl bg-white p-6 shadow-xl"
+    (click)="$event.stopPropagation()">
+
+    <!-- Modal Header -->
+    <div class="mb-6 flex items-center justify-between">
+      <h2 class="text-xl font-bold text-gray-800">
+        Edit Supplier
+      </h2>
+
+      <button
+        type="button"
+        (click)="closeEditSupplier()"
+        class="rounded-lg px-3 py-1 text-xl text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+        aria-label="Close">
+        &times;
+      </button>
+    </div>
+
+    <!-- Edit Form -->
+    <form
+      class="space-y-4"
+      (ngSubmit)="saveSupplierChanges()">
+
+      <!-- Name -->
+      <div>
+        <label class="mb-1 block text-sm font-medium text-gray-700">
+          Name *
+        </label>
+        <input
+          type="text"
+          name="editName"
+          [(ngModel)]="editSupplierData.name"
+          required
+          class="w-full rounded-lg border border-gray-300 px-4 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" />
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="mb-1 block text-sm font-medium text-gray-700">
+          Email
+        </label>
+        <input
+          type="email"
+          name="editEmail"
+          [(ngModel)]="editSupplierData.email"
+          class="w-full rounded-lg border border-gray-300 px-4 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" />
+      </div>
+
+      <!-- Phone -->
+      <div>
+        <label class="mb-1 block text-sm font-medium text-gray-700">
+          Phone
+        </label>
+        <input
+          type="text"
+          name="editPhone"
+          [(ngModel)]="editSupplierData.phone"
+          class="w-full rounded-lg border border-gray-300 px-4 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" />
+      </div>
+
+      <!-- Address -->
+      <div>
+        <label class="mb-1 block text-sm font-medium text-gray-700">
+          Address
+        </label>
+        <textarea
+          name="editAddress"
+          [(ngModel)]="editSupplierData.address"
+          rows="3"
+          class="w-full rounded-lg border border-gray-300 px-4 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+        </textarea>
+      </div>
+
+      <!-- Tax Number -->
+      <div>
+        <label class="mb-1 block text-sm font-medium text-gray-700">
+          Tax Number
+        </label>
+        <input
+          type="text"
+          name="editTaxNumber"
+          [(ngModel)]="editSupplierData.taxNumber"
+          class="w-full rounded-lg border border-gray-300 px-4 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" />
+      </div>
+
+      <!-- Status -->
+      <div class="flex items-center gap-3">
+        <input
+          id="editActive"
+          type="checkbox"
+          name="editActive"
+          [(ngModel)]="editSupplierData.active"
+          class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+
+        <label for="editActive" class="text-sm font-medium text-gray-700">
+          Active supplier
+        </label>
+      </div>
+
+      <!-- Error Message -->
+      <div
+        *ngIf="errorMessage"
+        class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Footer -->
+      <div class="flex justify-end gap-3 border-t border-gray-100 pt-5">
+        <button
+          type="button"
+          (click)="closeEditSupplier()"
+          class="rounded-lg border border-gray-300 px-5 py-2.5 font-medium text-gray-700 hover:bg-gray-50">
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          [disabled]="loading"
+          class="rounded-lg bg-blue-600 px-5 py-2.5 font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50">
+          {{ loading ? 'Saving...' : 'Save Changes' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
 
   </main>
 </div>

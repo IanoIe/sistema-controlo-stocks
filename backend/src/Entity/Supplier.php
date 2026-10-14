@@ -2,11 +2,35 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            normalizationContext: ['groups' => ['supplier:read']]
+        ),
+        new Get(
+            normalizationContext: ['groups' => ['supplier:read']]
+        ),
+        new Post(
+            normalizationContext: ['groups' => ['supplier:read']],
+            denormalizationContext: ['groups' => ['supplier:write']]
+        ),
+        new Patch(
+            normalizationContext: ['groups' => ['supplier:read']],
+            denormalizationContext: ['groups' => ['supplier:write']]
+        ),
+    ]
+)]
 #[ORM\Entity]
 #[ORM\Table(name: 'supplier')]
 class Supplier
@@ -14,30 +38,39 @@ class Supplier
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['supplier:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['supplier:read', 'supplier:write'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['supplier:read', 'supplier:write'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['supplier:read', 'supplier:write'])]
     private ?string $phone = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['supplier:read', 'supplier:write'])]
     private ?string $address = null;
 
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['supplier:read', 'supplier:write'])]
     private ?string $taxNumber = null;
 
     #[ORM\Column]
+    #[Groups(['supplier:read', 'supplier:write'])]
     private bool $active = true;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[Groups(['supplier:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[Groups(['supplier:read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     /**
