@@ -21,28 +21,17 @@ export class ProductService {
 
   // GET - All products
   getProducts(): Observable<Product[]> {
-
-    return this.http
-      .get<ProductCollection>(this.apiUrl)
-      .pipe(
-        map(response => response.member)
-      );
+    return this.http.get<ProductCollection>(this.apiUrl).pipe(map(response => response.member));
   }
 
   // GET - Product by ID
   getProduct(id: number): Observable<Product> {
-
-    return this.http.get<Product>(
-      `${this.apiUrl}/${id}`
-    );
+    return this.http.get<Product>(`${this.apiUrl}/${id}`);
   }
 
   // POST - Create product
   createProduct(product: CreateProduct): Observable<Product> {
-
-    return this.http.post<Product>(
-      this.apiUrl,
-      product,
+    return this.http.post<Product>(this.apiUrl, product,
       {
         headers: {
           'Content-Type': 'application/ld+json',
@@ -57,7 +46,6 @@ export class ProductService {
     id: number,
     product: CreateProduct
   ): Observable<Product> {
-
     return this.http.put<Product>(
       `${this.apiUrl}/${id}`,
       product,
@@ -72,7 +60,6 @@ export class ProductService {
 
   // DELETE - Delete product
   deleteProduct(id: number): Observable<void> {
-
     return this.http.delete<void>(
       `${this.apiUrl}/${id}`,
       {

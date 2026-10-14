@@ -12,12 +12,26 @@ import { StockExitCollection, StockExitModel } from "../models/stock-exit";
 
 export class StockExitService {
   private apiUrl = `${environment.apiUrl}/stock_exits`;
-
   constructor(private http: HttpClient){}
-
   getStockExits(): Observable<StockExitModel[]> {
     return this.http.get<StockExitCollection>(this.apiUrl).pipe(
       map(Response => Response.member)
+    );
+  }
+
+  createStockExit(payload: {
+    quantity: number;
+    dateStockExit: string;
+    product: string;
+   }):
+   Observable<StockExitModel> {
+    return this.http.post<StockExitModel>(this.apiUrl, payload,
+      {
+        headers: {
+          'Content-Type': 'application/ld+json',
+          'Accept': 'application/ld+json'
+        }
+      }
     );
   }
 }
