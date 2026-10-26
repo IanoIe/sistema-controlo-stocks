@@ -215,7 +215,7 @@ Open another terminal:
 - ng serve
 
 Open the local frontend URL displayed by Angular CLI, commonly:
-- http://localhost:4200
+- https://stockcontrol.wip
 Ensure that the frontend API configuration points to the running backend and that CORS settings allow requests from the frontend origin.
 
 ## ⚙️ Configuration
