@@ -59,9 +59,7 @@
     </section>
 
     <!-- Transfers table -->
-    <section class="overflow-hidden rounded-2xl border
-                    border-gray-200 bg-white shadow-sm">
-
+    <section class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
       <div class="border-b border-gray-200 p-5 sm:p-6">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
@@ -149,8 +147,7 @@
               </td>
 
               <td class="whitespace-nowrap px-6 py-4 text-right">
-                <button type="button" [attr.aria-label]="'View transfer ' + transfer.id" class="rounded-lg px-3 py-2 text-sm
-                  font-semibold text-indigo-600 transition hover:bg-indigo-50 hover:text-indigo-800">
+                <button type="button" (click)="viewDetails(transfer)" class="rounded-lg px-3 py-2 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-50 hover:text-indigo-800">
                   View Details
                 </button>
               </td>
@@ -174,11 +171,78 @@
       <div *ngIf="!loading && !errorMessage" class="border-t border-gray-200 px-6 py-4">
         <p class="text-sm text-gray-500"> Showing
           <span class="font-semibold text-gray-900"> {{ filteredTransfers.length }} </span>
-          of
+            of
           <span class="font-semibold text-gray-900"> {{ totalTransfers }} </span>
-          transfers
+            transfers
         </p>
       </div>
     </section>
   </main>
+
+  <!-- Transfer Details Modal -->
+  <div *ngIf="showDetailsModal && selectedTransfer as transfer" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 p-4" (click)="closeDetails()">
+    <div class="w-full max-w-2xl rounded-2xl bg-white shadow-xl" role="dialog" aria-modal="true" aria-labelledby="transfer-details-title" (click)="$event.stopPropagation()">
+      <div class="flex items-center justify-between border-b border-gray-200 p-6">
+        <div>
+          <h2 id="transfer-details-title" class="text-xl font-bold text-gray-900">
+            Transfer Details #{{ transfer.id }}
+          </h2>
+          <p class="mt-1 text-sm text-gray-500">
+            Stock transfer information
+          </p>
+        </div>
+
+        <button type="button" (click)="closeDetails()" aria-label="Close details" class="rounded-lg px-3 py-2 text-gray-500 hover:bg-gray-100">
+          ✕
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 gap-5 p-6 sm:grid-cols-2">
+        <div>
+          <label class="text-sm font-medium text-gray-500">Reference</label>
+          <p class="mt-1 font-semibold text-gray-900">#{{ transfer.id }}</p>
+        </div>
+
+        <div>
+          <label class="text-sm font-medium text-gray-500">Status</label>
+          <p class="mt-1">
+            <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold" [ngClass]="getStatusClass(transfer.status)">
+              {{ getStatusLabel(transfer.status) }}
+            </span>
+          </p>
+        </div>
+
+        <div>
+          <label class="text-sm font-medium text-gray-500">Source Warehouse</label>
+          <p class="mt-1 text-gray-900">
+            {{ getWarehouseName(transfer.sourceWarehouse) }}
+          </p>
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-500">Destination Warehouse</label>
+          <p class="mt-1 text-gray-900">
+            {{ getWarehouseName(transfer.destinationWarehouse) }}
+          </p>
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-500">Transfer Date</label>
+          <p class="mt-1 text-gray-900">
+            {{ transfer.transferDate | date:'dd/MM/yyyy' }}
+          </p>
+        </div>
+        <div class="sm:col-span-2">
+          <label class="text-sm font-medium text-gray-500">Notes</label>
+          <p class="mt-1 whitespace-pre-wrap text-gray-900">
+            {{ transfer.notes || 'No notes' }}
+          </p>
+        </div>
+      </div>
+
+      <div class="flex justify-end border-t border-gray-200 p-6">
+        <button type="button" (click)="closeDetails()" class="rounded-xl bg-gray-100 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-200">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

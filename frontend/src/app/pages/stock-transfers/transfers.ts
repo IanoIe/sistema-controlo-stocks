@@ -1,6 +1,8 @@
+
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+
 import { Sidebar } from '../../layout/sidebar/sidebar';
 import { StockTransferService } from '../../service/StockTransferService';
 import { StockTransfer } from '../../models/StockTransfer';
@@ -13,9 +15,9 @@ import { Warehouse } from '../../models/Warehouse';
   imports: [CommonModule, FormsModule, Sidebar],
   templateUrl: './transfers.html'
 })
+
 export class Transfers implements OnInit {
   private readonly transferService = inject(StockTransferService);
-
   private readonly warehouseService = inject(WarehouseService);
 
   warehouse: Warehouse[] = [];
@@ -28,6 +30,10 @@ export class Transfers implements OnInit {
 
   searchTerm = '';
   selectedStatus = 'ALL';
+
+  // Transfer details modal
+  selectedTransfer: StockTransfer | null = null;
+  showDetailsModal = false;
 
   readonly statuses: {
     value: string;
@@ -43,12 +49,13 @@ export class Transfers implements OnInit {
     this.loadWarehouses();
   }
 
+  // Load stock transfers
   loadTransfers(): void {
     this.loading = true;
     this.errorMessage = '';
 
     this.transferService.getStockTransfers().subscribe({
-      next: (data) => {
+      next: (data: StockTransfer[]) => {
         this.transfers = data;
         this.loading = false;
       },
@@ -60,29 +67,32 @@ export class Transfers implements OnInit {
     });
   }
 
+  // Load warehouses
   loadWarehouses(): void {
-  this.warehouseService.getWarehouses().subscribe({
-    next: (data) => {
-      this.warehouse = data;
-      this.warehouseNames.clear();
+    this.warehouseService.getWarehouses().subscribe({
+      next: (data: Warehouse[]) => {
+        this.warehouse = data;
+        this.warehouseNames.clear();
 
-      for (const warehouse of data) {
-        this.warehouseNames.set(
-          `/api/warehouses/${warehouse.id}`,
-          warehouse.name
-        );
+        for (const warehouse of data) {
+          this.warehouseNames.set(
+            `/api/warehouses/${warehouse.id}`,
+            warehouse.name
+          );
+        }
+      },
+      error: (error) => {
+        console.error('Error loading warehouses:', error);
       }
-    },
-    error: (error) => {
-      console.error('Error loading warehouses:', error);
-    }
-  });
-}
+    });
+  }
 
-getWarehouseName(iri: string): string {
-  return this.warehouseNames.get(iri) ?? iri;
-}
+  // Get warehouse name from its API IRI
+  getWarehouseName(iri: string): string {
+    return this.warehouseNames.get(iri) ?? iri;
+  }
 
+  // Filter transfers by search term and status
   get filteredTransfers(): StockTransfer[] {
     const term = this.searchTerm.trim().toLowerCase();
 
@@ -96,12 +106,19 @@ getWarehouseName(iri: string): string {
         String(transfer.id).includes(term) ||
         (transfer.notes ?? '').toLowerCase().includes(term) ||
         transfer.sourceWarehouse.toLowerCase().includes(term) ||
-        transfer.destinationWarehouse.toLowerCase().includes(term);
+        transfer.destinationWarehouse.toLowerCase().includes(term) ||
+        this.getWarehouseName(transfer.sourceWarehouse)
+          .toLowerCase().includes(term) ||
+        this.getWarehouseName(transfer.destinationWarehouse)
+          .toLowerCase().includes(term) ||
+        this.getStatusLabel(transfer.status)
+          .toLowerCase().includes(term);
 
       return matchesStatus && matchesSearch;
     });
   }
 
+  // Summary counters
   get totalTransfers(): number {
     return this.transfers.length;
   }
@@ -124,6 +141,7 @@ getWarehouseName(iri: string): string {
     ).length;
   }
 
+  // Status label
   getStatusLabel(status: string): string {
     const labels: Record<string, string> = {
       PENDING: 'Pending',
@@ -134,6 +152,7 @@ getWarehouseName(iri: string): string {
     return labels[status] ?? status;
   }
 
+  // Status badge CSS classes
   getStatusClass(status: string): string {
     const classes: Record<string, string> = {
       PENDING: 'bg-amber-50 text-amber-700 ring-amber-600/20',
@@ -145,7 +164,20 @@ getWarehouseName(iri: string): string {
       'bg-gray-100 text-gray-700 ring-gray-500/20';
   }
 
+  // Track table rows
   trackById(index: number, transfer: StockTransfer): number {
     return transfer.id;
+  }
+
+  // Open transfer details modal
+  viewDetails(transfer: StockTransfer): void {
+    this.selectedTransfer = transfer;
+    this.showDetailsModal = true;
+  }
+
+  // Close transfer details modal
+  closeDetails(): void {
+    this.showDetailsModal = false;
+    this.selectedTransfer = null;
   }
 }

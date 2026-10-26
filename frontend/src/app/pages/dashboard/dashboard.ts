@@ -12,15 +12,18 @@ import { StockEntryService } from '../../service/stockEntryService';
 
 import { StockExitModel } from '../../models/stock-exit';
 import { StockExitService } from '../../service/stockExitService';
-import { AuthService } from '../../service/AuthService';
 
+import { AuthService } from '../../service/AuthService';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-
-  imports: [CommonModule, RouterLink, RouterLinkActive, Sidebar],
-
+  imports: [
+    CommonModule,
+    RouterLink,
+    RouterLinkActive,
+    Sidebar
+  ],
   templateUrl: './dashboard.html',
 })
 export class Dashboard implements OnInit {
@@ -32,7 +35,6 @@ export class Dashboard implements OnInit {
   lowStockProducts: Product[] = [];
   outOfStockProducts: Product[] = [];
 
-
   // ==========================================
   // PRODUCTS BY CATEGORY
   // ==========================================
@@ -42,7 +44,6 @@ export class Dashboard implements OnInit {
     percentage: number;
   }[] = [];
 
-
   // ==========================================
   // STOCK EVOLUTION
   // ==========================================
@@ -51,7 +52,6 @@ export class Dashboard implements OnInit {
     stock: number;
   }[] = [];
 
-
   // ==========================================
   // DASHBOARD TOTALS
   // ==========================================
@@ -59,6 +59,9 @@ export class Dashboard implements OnInit {
   totalLowStock = 0;
   totalOutOfStock = 0;
 
+  // Total estimated sales value of current inventory
+  totalInventoryValue = 0;
+  formattedInventoryValue = '0,00 €';
 
   // ==========================================
   // STOCK ENTRIES
@@ -66,13 +69,11 @@ export class Dashboard implements OnInit {
   stockEntries: StockEntryModel[] = [];
   totalEntries = 0;
 
-
   // ==========================================
   // STOCK EXITS
   // ==========================================
   stockExits: StockExitModel[] = [];
   totalExits = 0;
-
 
   // ==========================================
   // CONSTRUCTOR
@@ -85,7 +86,6 @@ export class Dashboard implements OnInit {
     private router: Router
   ) {}
 
-
   // ==========================================
   // INITIALIZATION
   // ==========================================
@@ -95,12 +95,14 @@ export class Dashboard implements OnInit {
     this.loadStockExits();
   }
 
-
   // ==========================================
   // LOGOUT
   // ==========================================
   logout(): void {
-    const confirmed = window.confirm( 'Are you sure you want to log out?');
+    const confirmed = window.confirm(
+      'Are you sure you want to log out?'
+    );
+
     if (!confirmed) {
       return;
     }
@@ -110,10 +112,12 @@ export class Dashboard implements OnInit {
         this.router.navigate(['/login'], {
           replaceUrl: true
         });
+      },
+      error: (error) => {
+        console.error('ERROR LOGGING OUT:', error);
       }
     });
   }
-
 
   // ==========================================
   // LOAD PRODUCTS
@@ -122,29 +126,84 @@ export class Dashboard implements OnInit {
     this.productService.getProducts().subscribe({
       next: (products) => {
         this.products = products;
+
         // --------------------------------------
         // TOTAL PRODUCTS
         // --------------------------------------
         this.totalProducts = products.length;
+
+        // --------------------------------------
+        // INVENTORY VALUE
+        // Unit sale price * current quantity
+        // --------------------------------------
+        this.totalInventoryValue = products.reduce(
+          (total, product) => {
+            const price = Number(product.price);
+            const quantity = Number(product.quantity);
+
+            if (
+              !Number.isFinite(price) ||
+              !Number.isFinite(quantity)
+            ) {
+              return total;
+            }
+
+            return total + (price * quantity);
+          },
+          0
+        );
+
+        // --------------------------------------
+        // FORMAT INVENTORY VALUE
+        // --------------------------------------
+        this.formattedInventoryValue =
+          this.totalInventoryValue.toLocaleString('pt-PT', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }) + ' €';
+
+        console.log(
+          'INVENTORY VALUE:',
+          this.totalInventoryValue
+        );
+
+        console.log(
+          'FORMATTED INVENTORY VALUE:',
+          this.formattedInventoryValue
+        );
+
         // --------------------------------------
         // OUT OF STOCK
         // --------------------------------------
-        this.outOfStockProducts = products.filter(product => product.quantity === 0);
+        this.outOfStockProducts = products.filter(
+          product => product.quantity <= 0
+        );
+
         this.totalOutOfStock = this.outOfStockProducts.length;
+
         // --------------------------------------
         // LOW STOCK
+        // Excludes products already out of stock
         // --------------------------------------
-        this.lowStockProducts = products.filter( product => product.quantity > 0 && product.quantity <= product.stockMin);
+        this.lowStockProducts = products.filter(
+          product =>
+            product.quantity > 0 &&
+            product.quantity <= product.stockMin
+        );
+
         this.totalLowStock = this.lowStockProducts.length;
+
         // --------------------------------------
         // PRODUCTS BY CATEGORY
         // --------------------------------------
         this.calculateCategoryStats();
+
         // --------------------------------------
-        // CONSOLE
+        // DEBUG INFORMATION
         // --------------------------------------
         console.log('DASHBOARD PRODUCTS:', this.products);
         console.log('TOTAL PRODUCTS:', this.totalProducts);
+        console.log('INVENTORY VALUE:', this.totalInventoryValue);
         console.log('TOTAL OUT OF STOCK:', this.totalOutOfStock);
         console.log('TOTAL LOW STOCK:', this.totalLowStock);
         console.log('CATEGORY STATS:', this.categoryStats);
@@ -158,49 +217,46 @@ export class Dashboard implements OnInit {
     });
   }
 
-
   // ==========================================
   // CALCULATE PRODUCTS BY CATEGORY
   // ==========================================
   private calculateCategoryStats(): void {
-    const categories: {
-      [key: string]: number;
-    } = {};
-
+    const categories: Record<string, number> = {};
 
     // --------------------------------------
     // COUNT PRODUCTS BY CATEGORY
     // --------------------------------------
     this.products.forEach(product => {
       const categoryName = product.category?.nameCategory;
+
       if (!categoryName) {
         return;
       }
-      if (!categories[categoryName]) {
-        categories[categoryName] = 0;
-      }
-      categories[categoryName]++;
-    });
 
+      categories[categoryName] =
+        (categories[categoryName] ?? 0) + 1;
+    });
 
     // --------------------------------------
     // FIND LARGEST CATEGORY
     // --------------------------------------
-    const maxCount = Math.max(...Object.values(categories),0);
+    const maxCount = Math.max(
+      ...Object.values(categories),
+      0
+    );
+
     // --------------------------------------
     // CREATE CATEGORY STATISTICS
     // --------------------------------------
-    this.categoryStats =
-      Object.entries(categories).map(
-        ([name, count]) => {
-          return {
-            name: name,
-            count: count,
-            percentage:
-              maxCount > 0 ? (count / maxCount) * 100 : 0
-          };
-        }
-      );
+    this.categoryStats = Object.entries(categories).map(
+      ([name, count]) => ({
+        name,
+        count,
+        percentage:
+          maxCount > 0 ? (count / maxCount) * 100 : 0
+      })
+    );
+
     console.log('CATEGORY STATS:', this.categoryStats);
   }
 
@@ -211,26 +267,18 @@ export class Dashboard implements OnInit {
     this.stockEntryService.getStockEntries().subscribe({
       next: (entries) => {
         this.stockEntries = entries;
+
         // --------------------------------------
-        // CALCULATE TOTAL ENTRIES
+        // TOTAL ENTRY QUANTITY
         // --------------------------------------
         this.totalEntries = entries.reduce(
-          (total, entry) =>
-            total + entry.quantity,
+          (total, entry) => total + entry.quantity,
           0
         );
 
-        // --------------------------------------
-        // CONSOLE
-        // --------------------------------------
-        console.log(
-          'STOCK ENTRIES:',
-          this.stockEntries
-        );
-        console.log(
-          'TOTAL ENTRIES:',
-          this.totalEntries
-        );
+        console.log('STOCK ENTRIES:', this.stockEntries);
+        console.log('TOTAL ENTRIES:', this.totalEntries);
+
         // --------------------------------------
         // UPDATE STOCK EVOLUTION
         // --------------------------------------
@@ -238,7 +286,7 @@ export class Dashboard implements OnInit {
       },
       error: (error) => {
         console.error(
-          'ERROR LOADING STOCK ENTRIES:',
+          'ERROR LOADING DASHBOARD STOCK ENTRIES:',
           error
         );
       }
@@ -252,25 +300,18 @@ export class Dashboard implements OnInit {
     this.stockExitService.getStockExits().subscribe({
       next: (exits) => {
         this.stockExits = exits;
+
         // --------------------------------------
-        // CALCULATE TOTAL EXITS
+        // TOTAL EXIT QUANTITY
         // --------------------------------------
         this.totalExits = exits.reduce(
-          (total, exit) =>
-            total + exit.quantity,
+          (total, exit) => total + exit.quantity,
           0
         );
-        // --------------------------------------
-        // CONSOLE
-        // --------------------------------------
-        console.log(
-          'STOCK EXITS:',
-          this.stockExits
-        );
-        console.log(
-          'TOTAL EXITS:',
-          this.totalExits
-        );
+
+        console.log('STOCK EXITS:', this.stockExits);
+        console.log('TOTAL EXITS:', this.totalExits);
+
         // --------------------------------------
         // UPDATE STOCK EVOLUTION
         // --------------------------------------
@@ -278,13 +319,12 @@ export class Dashboard implements OnInit {
       },
       error: (error) => {
         console.error(
-          'ERROR LOADING STOCK EXITS:',
+          'ERROR LOADING DASHBOARD STOCK EXITS:',
           error
         );
       }
     });
   }
-
 
   // ==========================================
   // CALCULATE STOCK EVOLUTION
@@ -295,62 +335,51 @@ export class Dashboard implements OnInit {
       quantity: number;
     }[] = [];
 
-
     // --------------------------------------
     // STOCK ENTRIES = POSITIVE QUANTITY
     // --------------------------------------
     this.stockEntries.forEach(entry => {
       operations.push({
-        date: new Date(
-          entry.dateStockEntry
-        ),
+        date: new Date(entry.dateStockEntry),
         quantity: entry.quantity
       });
     });
-
 
     // --------------------------------------
     // STOCK EXITS = NEGATIVE QUANTITY
     // --------------------------------------
     this.stockExits.forEach(exit => {
       operations.push({
-        date: new Date(
-          exit.dateStockExit
-        ),
+        date: new Date(exit.dateStockExit),
         quantity: -exit.quantity
       });
     });
-
 
     // --------------------------------------
     // ORDER OPERATIONS BY DATE
     // --------------------------------------
     operations.sort(
-      (a, b) =>
-        a.date.getTime() -
-        b.date.getTime()
+      (a, b) => a.date.getTime() - b.date.getTime()
     );
 
-
     // --------------------------------------
-    // CALCULATE CURRENT STOCK
+    // CALCULATE CUMULATIVE MOVEMENTS
     // --------------------------------------
     let currentStock = 0;
 
-    this.stockEvolution =
-      operations.map(operation => {
-        currentStock += operation.quantity;
-        return {
-          date: operation.date.toLocaleDateString('pt-PT',
-              {
-                day: '2-digit',
-                month: '2-digit'
-              }
-            ),
-          stock: currentStock
-        };
-      });
-      console.log('STOCK EVOLUTION:',this.stockEvolution);
+    this.stockEvolution = operations.map(operation => {
+      currentStock += operation.quantity;
+
+      return {
+        date: operation.date.toLocaleDateString('pt-PT', {
+          day: '2-digit',
+          month: '2-digit'
+        }),
+        stock: currentStock
+      };
+    });
+
+    console.log('STOCK EVOLUTION:', this.stockEvolution);
   }
 
   // ==========================================
@@ -360,8 +389,11 @@ export class Dashboard implements OnInit {
     if (this.stockEvolution.length === 0) {
       return 1;
     }
-    return Math.max( ...this.stockEvolution.map(point => point.stock),
-    1);
+
+    return Math.max(
+      ...this.stockEvolution.map(point => point.stock),
+      1
+    );
   }
 
   // ==========================================

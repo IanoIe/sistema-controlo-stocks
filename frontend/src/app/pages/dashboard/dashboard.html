@@ -14,7 +14,7 @@
     </div>
 
     <!-- ==================== CARDS ==================== -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6 gap-4">
       <!-- Products -->
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4
         cursor-pointer hover:shadow-md hover:border-cyan-300
@@ -30,6 +30,18 @@
         </div>
       </div>
 
+      <!-- Inventory Value -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md hover:border-cyan-300 transition-all duration-200">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <p class="text-xs font-medium text-gray-500"> Inventory Value </p>
+            <h2 class="text-xl font-bold text-cyan-700 mt-1"> {{ formattedInventoryValue }} </h2>
+          </div>
+
+          <div class="w-10 h-10 shrink-0 rounded-lg bg-cyan-100 flex items-center justify-center text-lg"> 💰 </div>
+        </div>
+      </div>
+
       <!-- Out of Stock -->
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 cursor-pointer hover:shadow-md transition" (click)="goToAlerts()">
         <div class="flex items-center justify-between">
@@ -37,10 +49,7 @@
             <p class="text-xs font-medium text-gray-500">Out of Stock</p>
             <h2 class="text-2xl font-bold text-red-600 mt-1"> {{ totalOutOfStock }} </h2>
           </div>
-
-          <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center text-lg">
-            ⚠️
-          </div>
+          <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center text-lg"> ⚠️ </div>
         </div>
       </div>
 
@@ -51,9 +60,7 @@
           <p class="text-xs font-medium text-gray-500">Low Stock</p>
           <h2 class="text-2xl font-bold text-yellow-600 mt-1"> {{ totalLowStock }} </h2>
         </div>
-        <div class="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center text-lg">
-          📉
-        </div>
+        <div class="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center text-lg"> 📉 </div>
       </div>
     </div>
 
@@ -64,9 +71,7 @@
           <p class="text-xs font-medium text-gray-500">Entries</p>
           <h2 class="text-2xl font-bold text-green-600 mt-1"> {{ totalEntries }} </h2>
         </div>
-        <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center text-lg">
-          📥
-        </div>
+        <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center text-lg"> 📥 </div>
       </div>
     </div>
 
@@ -77,9 +82,7 @@
           <p class="text-xs font-medium text-gray-500">Exits</p>
           <h2 class="text-2xl font-bold text-red-600 mt-1">{{ totalExits }} </h2>
         </div>
-        <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center text-lg">
-          📤
-        </div>
+        <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center text-lg"> 📤 </div>
       </div>
     </div>
   </div>
@@ -94,7 +97,7 @@
         No stock evolution data available.
       </div>
 
-      <!-- Gráfico -->
+      <!-- Graphic -->
       <div *ngIf="stockEvolution.length > 0" class="h-56 flex items-end gap-3 border-b border-l border-gray-200 px-4 pb-2">
         <div *ngFor="let point of stockEvolution" class="flex-1 h-full flex flex-col justify-end items-center">
           <!-- Valor -->
@@ -120,7 +123,6 @@
               <span class="text-gray-700"> {{ category.name }} </span>
               <span class="text-gray-500"> {{ category.count }} </span>
             </div>
-
             <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
               <div class="h-1.5 bg-cyan-600 rounded-full transition-all duration-500" [style.width.%]="category.percentage"></div>
             </div>
