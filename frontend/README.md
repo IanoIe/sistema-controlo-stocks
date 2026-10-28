@@ -115,7 +115,7 @@ npx ng serve
 
 Open your browser and navigate to:
 
-http://localhost:4200/
+https://stockcontrol.wip/
 
 The application automatically reloads when source files change.
 

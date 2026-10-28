@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
@@ -15,6 +16,21 @@ import { StockExitService } from '../../service/stockExitService';
 
 import { AuthService } from '../../service/AuthService';
 
+// ==========================================
+// RECENT OPERATION MODEL
+// ==========================================
+interface RecentOperation {
+  id: number;
+  type: 'Entry' | 'Exit';
+  quantity: number;
+  date: string;
+  productName: string;
+  timestamp: number;
+}
+
+// ==========================================
+// DASHBOARD COMPONENT
+// ==========================================
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -59,7 +75,7 @@ export class Dashboard implements OnInit {
   totalLowStock = 0;
   totalOutOfStock = 0;
 
-  // Total estimated sales value of current inventory
+  // Total estimated value of current inventory
   totalInventoryValue = 0;
   formattedInventoryValue = '0,00 €';
 
@@ -74,6 +90,11 @@ export class Dashboard implements OnInit {
   // ==========================================
   stockExits: StockExitModel[] = [];
   totalExits = 0;
+
+  // ==========================================
+  // RECENT OPERATIONS
+  // ==========================================
+  recentOperations: RecentOperation[] = [];
 
   // ==========================================
   // CONSTRUCTOR
@@ -127,15 +148,11 @@ export class Dashboard implements OnInit {
       next: (products) => {
         this.products = products;
 
-        // --------------------------------------
         // TOTAL PRODUCTS
-        // --------------------------------------
         this.totalProducts = products.length;
 
-        // --------------------------------------
         // INVENTORY VALUE
-        // Unit sale price * current quantity
-        // --------------------------------------
+        // Unit price * current quantity
         this.totalInventoryValue = products.reduce(
           (total, product) => {
             const price = Number(product.price);
@@ -153,38 +170,22 @@ export class Dashboard implements OnInit {
           0
         );
 
-        // --------------------------------------
         // FORMAT INVENTORY VALUE
-        // --------------------------------------
         this.formattedInventoryValue =
           this.totalInventoryValue.toLocaleString('pt-PT', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
           }) + ' €';
 
-        console.log(
-          'INVENTORY VALUE:',
-          this.totalInventoryValue
-        );
-
-        console.log(
-          'FORMATTED INVENTORY VALUE:',
-          this.formattedInventoryValue
-        );
-
-        // --------------------------------------
         // OUT OF STOCK
-        // --------------------------------------
         this.outOfStockProducts = products.filter(
           product => product.quantity <= 0
         );
 
         this.totalOutOfStock = this.outOfStockProducts.length;
 
-        // --------------------------------------
         // LOW STOCK
         // Excludes products already out of stock
-        // --------------------------------------
         this.lowStockProducts = products.filter(
           product =>
             product.quantity > 0 &&
@@ -193,14 +194,10 @@ export class Dashboard implements OnInit {
 
         this.totalLowStock = this.lowStockProducts.length;
 
-        // --------------------------------------
         // PRODUCTS BY CATEGORY
-        // --------------------------------------
         this.calculateCategoryStats();
 
-        // --------------------------------------
         // DEBUG INFORMATION
-        // --------------------------------------
         console.log('DASHBOARD PRODUCTS:', this.products);
         console.log('TOTAL PRODUCTS:', this.totalProducts);
         console.log('INVENTORY VALUE:', this.totalInventoryValue);
@@ -223,9 +220,6 @@ export class Dashboard implements OnInit {
   private calculateCategoryStats(): void {
     const categories: Record<string, number> = {};
 
-    // --------------------------------------
-    // COUNT PRODUCTS BY CATEGORY
-    // --------------------------------------
     this.products.forEach(product => {
       const categoryName = product.category?.nameCategory;
 
@@ -237,17 +231,11 @@ export class Dashboard implements OnInit {
         (categories[categoryName] ?? 0) + 1;
     });
 
-    // --------------------------------------
-    // FIND LARGEST CATEGORY
-    // --------------------------------------
     const maxCount = Math.max(
       ...Object.values(categories),
       0
     );
 
-    // --------------------------------------
-    // CREATE CATEGORY STATISTICS
-    // --------------------------------------
     this.categoryStats = Object.entries(categories).map(
       ([name, count]) => ({
         name,
@@ -268,9 +256,7 @@ export class Dashboard implements OnInit {
       next: (entries) => {
         this.stockEntries = entries;
 
-        // --------------------------------------
         // TOTAL ENTRY QUANTITY
-        // --------------------------------------
         this.totalEntries = entries.reduce(
           (total, entry) => total + entry.quantity,
           0
@@ -279,9 +265,10 @@ export class Dashboard implements OnInit {
         console.log('STOCK ENTRIES:', this.stockEntries);
         console.log('TOTAL ENTRIES:', this.totalEntries);
 
-        // --------------------------------------
+        // UPDATE RECENT OPERATIONS
+        this.calculateRecentOperations();
+
         // UPDATE STOCK EVOLUTION
-        // --------------------------------------
         this.calculateStockEvolution();
       },
       error: (error) => {
@@ -301,9 +288,7 @@ export class Dashboard implements OnInit {
       next: (exits) => {
         this.stockExits = exits;
 
-        // --------------------------------------
         // TOTAL EXIT QUANTITY
-        // --------------------------------------
         this.totalExits = exits.reduce(
           (total, exit) => total + exit.quantity,
           0
@@ -312,9 +297,10 @@ export class Dashboard implements OnInit {
         console.log('STOCK EXITS:', this.stockExits);
         console.log('TOTAL EXITS:', this.totalExits);
 
-        // --------------------------------------
+        // UPDATE RECENT OPERATIONS
+        this.calculateRecentOperations();
+
         // UPDATE STOCK EVOLUTION
-        // --------------------------------------
         this.calculateStockEvolution();
       },
       error: (error) => {
@@ -327,6 +313,42 @@ export class Dashboard implements OnInit {
   }
 
   // ==========================================
+  // CALCULATE RECENT OPERATIONS
+  // ==========================================
+  private calculateRecentOperations(): void {
+    const entries: RecentOperation[] = this.stockEntries.map(
+      entry => ({
+        id: entry.id,
+        type: 'Entry',
+        quantity: entry.quantity,
+        date: entry.dateStockEntry,
+        productName:
+          entry.product?.nameProduct ?? 'Unknown product',
+        timestamp: new Date(entry.dateStockEntry).getTime()
+      })
+    );
+
+    const exits: RecentOperation[] = this.stockExits.map(
+      exit => ({
+        id: exit.id,
+        type: 'Exit',
+        quantity: exit.quantity,
+        date: exit.dateStockExit,
+        productName:
+          exit.product?.nameProduct ?? 'Unknown product',
+        timestamp: new Date(exit.dateStockExit).getTime()
+      })
+    );
+
+    this.recentOperations = [...entries, ...exits]
+      .filter(operation =>
+        Number.isFinite(operation.timestamp)
+      )
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .slice(0, 5);
+  }
+
+  // ==========================================
   // CALCULATE STOCK EVOLUTION
   // ==========================================
   private calculateStockEvolution(): void {
@@ -335,9 +357,7 @@ export class Dashboard implements OnInit {
       quantity: number;
     }[] = [];
 
-    // --------------------------------------
     // STOCK ENTRIES = POSITIVE QUANTITY
-    // --------------------------------------
     this.stockEntries.forEach(entry => {
       operations.push({
         date: new Date(entry.dateStockEntry),
@@ -345,9 +365,7 @@ export class Dashboard implements OnInit {
       });
     });
 
-    // --------------------------------------
     // STOCK EXITS = NEGATIVE QUANTITY
-    // --------------------------------------
     this.stockExits.forEach(exit => {
       operations.push({
         date: new Date(exit.dateStockExit),
@@ -355,16 +373,12 @@ export class Dashboard implements OnInit {
       });
     });
 
-    // --------------------------------------
     // ORDER OPERATIONS BY DATE
-    // --------------------------------------
     operations.sort(
       (a, b) => a.date.getTime() - b.date.getTime()
     );
 
-    // --------------------------------------
     // CALCULATE CUMULATIVE MOVEMENTS
-    // --------------------------------------
     let currentStock = 0;
 
     this.stockEvolution = operations.map(operation => {
