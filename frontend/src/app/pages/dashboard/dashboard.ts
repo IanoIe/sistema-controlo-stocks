@@ -34,16 +34,11 @@ interface RecentOperation {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    RouterLinkActive,
-    Sidebar
-  ],
+  imports: [CommonModule, RouterLink, RouterLinkActive, Sidebar],
   templateUrl: './dashboard.html',
 })
-export class Dashboard implements OnInit {
 
+export class Dashboard implements OnInit {
   // ==========================================
   // PRODUCTS
   // ==========================================
@@ -114,30 +109,6 @@ export class Dashboard implements OnInit {
     this.loadProducts();
     this.loadStockEntries();
     this.loadStockExits();
-  }
-
-  // ==========================================
-  // LOGOUT
-  // ==========================================
-  logout(): void {
-    const confirmed = window.confirm(
-      'Are you sure you want to log out?'
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    this.authService.logout().subscribe({
-      next: () => {
-        this.router.navigate(['/login'], {
-          replaceUrl: true
-        });
-      },
-      error: (error) => {
-        console.error('ERROR LOGGING OUT:', error);
-      }
-    });
   }
 
   // ==========================================
