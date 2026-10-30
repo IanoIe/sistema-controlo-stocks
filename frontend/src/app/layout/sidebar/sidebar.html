@@ -113,12 +113,19 @@
       </div>
     </div>
   </nav>
-  <!-- Profile -->
+
+  <!-- User Account -->
   <div class="border-t border-violet-200 p-3">
-    <a routerLink="/profile" routerLinkActive="bg-violet-700 text-white shadow-sm"
-      class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
+    <!-- Profile -->
+    <a routerLink="/profile" routerLinkActive="bg-violet-700 text-white shadow-sm" class="flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
       <span>👤</span>
-      <span>Profile</span>
+      <span>My Profile</span>
     </a>
+
+    <!-- Logout -->
+    <button type="button" (click)="logout()" class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-red-600 transition-colors hover:bg-red-50">
+      <span>🚪</span>
+      <span>Sign Out</span>
+    </button>
   </div>
 </aside>

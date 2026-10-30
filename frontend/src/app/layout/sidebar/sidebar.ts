@@ -1,11 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {
-  Router,
-  RouterLink,
-  RouterLinkActive,
-  NavigationEnd
-} from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
+import { AuthService } from '../../service/AuthService';
 
 @Component({
   selector: 'app-sidebar',
@@ -17,7 +13,9 @@ import { filter, Subscription } from 'rxjs';
 export class Sidebar implements OnInit, OnDestroy {
   activeSection: 'products' | 'categories' | null = null;
   private routerSubscription?: Subscription;
-  constructor(private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router) {}
 
   ngOnInit(): void {
     this.updateActiveSection();
@@ -46,5 +44,17 @@ export class Sidebar implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.routerSubscription?.unsubscribe();
+  }
+
+  logout(): void {
+    const confirmed = confirm('Are you sure you want to log out?');
+    if (!confirmed) {
+      return;
+    }
+    this.authService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+      }
+    });
   }
 }
