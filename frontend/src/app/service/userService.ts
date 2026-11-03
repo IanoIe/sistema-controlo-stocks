@@ -1,8 +1,9 @@
+
 import { Injectable } from "@angular/core";
 import { environment } from "../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import { map, Observable } from "rxjs";
-import { UserCollection, UserModel } from "../models/user";
+import { UserCollection, UserModel, RegisterModel } from "../models/user";
 
 interface UpdateMeResponse {
   success: boolean;
@@ -19,18 +20,26 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
+  // REGISTER
+  register(data: RegisterModel): Observable<UserModel> {
+    return this.http.post<UserModel>(this.apiUrl, data);
+  }
+
+  // GET USERS
   getUsers(): Observable<UserModel[]> {
     return this.http.get<UserCollection>(this.apiUrl).pipe(
       map(response => response.member)
     );
   }
 
+  // GET CURRENT USER
   getMe(): Observable<UserModel> {
     return this.http.get<UserModel>(
       `${environment.apiUrl}/me`
     );
   }
 
+  // UPDATE CURRENT USER
   updateMe(data: {
     name?: string;
     email?: string;
@@ -46,6 +55,7 @@ export class UserService {
     );
   }
 
+  // DELETE USER
   deleteUser(id: number): Observable<void> {
     return this.http.delete<void>(
       `${this.apiUrl}/${id}`

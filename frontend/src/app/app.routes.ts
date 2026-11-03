@@ -12,6 +12,12 @@ export const routes: Routes = [
       import('./pages/login/login').then(m => m.Login)
   },
 
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./pages/register/register').then(m => m.Register)
+  },
+
   // =========================
   // DASHBOARD
   // =========================

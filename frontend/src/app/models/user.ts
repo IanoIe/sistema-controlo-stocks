@@ -10,3 +10,19 @@ export interface UserCollection {
 }
 
 export type User = UserModel;
+
+
+// Dados enviados no registo
+export interface RegisterModel {
+  name: string;
+  email: string;
+  password: string;
+}
+
+// Dados enviados no login
+export interface LoginModel {
+  email: string;
+  password: string;
+}
+
+
