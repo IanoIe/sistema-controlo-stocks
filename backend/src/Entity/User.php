@@ -7,10 +7,11 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Post;
 
 use App\Controller\Api\MeAction;
 use App\Controller\Api\UpdateMeAction;
-
+use App\Controller\Api\RegisterController;
 use App\Repository\UserRepository;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -39,6 +40,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
             read: false,
             security: 'is_granted("ROLE_USER")',
             name: 'api_me',
+        ),
+
+        new Post(
+            uriTemplate: '/register',
+            controller: RegisterController::class,
+            read: false,
+            deserialize: false,
+            name: 'api_register',
         ),
 
         new Delete(
