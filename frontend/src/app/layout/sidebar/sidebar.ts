@@ -1,7 +1,9 @@
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { AuthService } from '../../service/AuthService';
+import { User } from '../../models/user';
 
 @Component({
   selector: 'app-sidebar',
@@ -9,34 +11,54 @@ import { AuthService } from '../../service/AuthService';
   imports: [RouterLink, RouterLinkActive],
   templateUrl: './sidebar.html'
 })
-
 export class Sidebar implements OnInit, OnDestroy {
+
   activeSection: 'products' | 'categories' | null = null;
+
+  currentUser: User | null = null;
+
   private routerSubscription?: Subscription;
+  private userSubscription?: Subscription;
+
   constructor(
     private authService: AuthService,
-    private router: Router) {}
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
+
+    // Subscribe to logged-in user
+    this.userSubscription = this.authService.currentUser.subscribe(user => {
+      this.currentUser = user;
+    });
+
+    // Load user if token exists
+    if (this.authService.isAuthenticated() && !this.currentUser) {
+      this.authService.loadCurrentUser().subscribe();
+    }
+
     this.updateActiveSection();
+
     this.routerSubscription = this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd)
-    )
+      .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => this.updateActiveSection());
   }
 
   private updateActiveSection(): void {
     const url = this.router.url;
     const path = url.split('?')[0];
+
     const returnTo = new URLSearchParams(
       url.split('?')[1] ?? ''
     ).get('returnTo');
 
-    if (path === '/categories' ||
+    if (
+      path === '/categories' ||
       path.startsWith('/categories/') ||
       returnTo?.startsWith('/categories/')
     ) {
       this.activeSection = 'categories';
+
     } else if (path === '/products') {
       this.activeSection = 'products';
     }
@@ -44,13 +66,16 @@ export class Sidebar implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.routerSubscription?.unsubscribe();
+    this.userSubscription?.unsubscribe();
   }
 
   logout(): void {
     const confirmed = confirm('Are you sure you want to log out?');
+
     if (!confirmed) {
       return;
     }
+
     this.authService.logout().subscribe({
       next: () => {
         this.router.navigate(['/login']);

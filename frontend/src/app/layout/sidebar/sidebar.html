@@ -116,12 +116,21 @@
 
   <!-- User Account -->
   <div class="border-t border-violet-200 p-3">
-    <!-- Profile -->
-    <a routerLink="/profile" routerLinkActive="bg-violet-700 text-white shadow-sm" class="flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium transition-colors hover:bg-violet-100 hover:text-violet-900">
-      <span>👤</span>
-      <span>My Profile</span>
+    <!-- Logged User / Profile Link -->
+    <a routerLink="/profile" routerLinkActive="bg-violet-200" class="mb-3 flex items-center gap-3 rounded-lg bg-violet-100 p-3 transition-colors hover:bg-violet-200 cursor-pointer">
+      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-violet-700 text-lg text-white">
+        👤
+      </div>
+      <div class="min-w-0 flex-1">
+        <p class="truncate font-bold text-violet-900">
+          {{ currentUser?.name || 'User' }}
+        </p>
+        <p class="truncate text-xs text-gray-500">
+          {{ currentUser?.email }}
+        </p>
+      </div>
+      <span class="text-violet-700">›</span>
     </a>
-
     <!-- Logout -->
     <button type="button" (click)="logout()" class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-red-600 transition-colors hover:bg-red-50">
       <span>🚪</span>
