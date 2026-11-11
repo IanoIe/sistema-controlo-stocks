@@ -12,7 +12,6 @@ import {
   providedIn: 'root'
 })
 export class StockEntryService {
-
   private apiUrl = `${environment.apiUrl}/stock_entries`;
 
   constructor(private http: HttpClient) {}

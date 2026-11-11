@@ -1,14 +1,9 @@
 <aside class="flex min-h-screen w-64 flex-col bg-violet-50 text-gray-700 border-r border-violet-100">
-
   <!-- Navigation -->
    <nav class="flex-1 space-y-3 overflow-y-auto px-3 py-3">
-
     <!-- MAIN MENU -->
     <div>
-      <p class="mb-3 px-3 text-lg font-bold uppercase tracking-wider text-gray-700 text-center">
-        Main Menu
-      </p>
-
+      <p class="mb-3 px-3 text-lg font-bold uppercase tracking-wider text-gray-700 text-center"> Main Menu </p>
       <div class="space-y-0.5">
         <!-- Dashboard -->
         <a routerLink="/dashboard" routerLinkActive="bg-violet-700 text-white shadow-sm" [routerLinkActiveOptions]="{ exact: true }"
@@ -23,7 +18,6 @@
           <span>📦</span>
           <span>Products</span>
         </a>
-
         <!-- Categories -->
         <a routerLink="/categories" [class.bg-violet-700]="activeSection === 'categories'" [class.text-white]="activeSection === 'categories'"
           [class.shadow-sm]="activeSection === 'categories'" class="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors
@@ -33,13 +27,9 @@
         </a>
       </div>
     </div>
-
     <!-- STOCK MANAGEMENT -->
     <div>
-      <p class="mb-3 px-3 text-lg font-bold uppercase tracking-wider text-gray-700 text-center">
-        Stock Management
-      </p>
-
+      <p class="mb-3 px-3 text-lg font-bold uppercase tracking-wider text-gray-700 text-center"> Stock Management </p>
       <div class="space-y-0.5">
         <!-- Warehouses -->
         <a routerLink="/warehouses" routerLinkActive="bg-violet-700 text-white shadow-sm"
@@ -75,9 +65,7 @@
     </div>
     <!-- MANAGEMENT -->
     <div>
-      <p class="mb-3 px-3 text-lg font-bold uppercase tracking-wider text-gray-700 text-center">
-        Management
-      </p>
+      <p class="mb-3 px-3 text-lg font-bold uppercase tracking-wider text-gray-700 text-center"> Management </p>
       <div class="space-y-0.5">
         <!-- Suppliers -->
         <a routerLink="/suppliers"
@@ -113,7 +101,6 @@
       </div>
     </div>
   </nav>
-
   <!-- User Account -->
   <div class="border-t border-violet-200 p-3">
     <!-- Logged User / Profile Link -->
@@ -122,12 +109,8 @@
         👤
       </div>
       <div class="min-w-0 flex-1">
-        <p class="truncate font-bold text-violet-900">
-          {{ currentUser?.name || 'User' }}
-        </p>
-        <p class="truncate text-xs text-gray-500">
-          {{ currentUser?.email }}
-        </p>
+        <p class="truncate font-bold text-violet-900"> {{ currentUser?.name || 'User' }} </p>
+        <p class="truncate text-xs text-gray-500"> {{ currentUser?.email }} </p>
       </div>
       <span class="text-violet-700">›</span>
     </a>

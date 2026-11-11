@@ -14,12 +14,11 @@ interface UpdateMeResponse {
 @Injectable({
   providedIn: 'root'
 })
+
 export class UserService {
-
   private apiUrl = `${environment.apiUrl}/users`;
-
   constructor(private http: HttpClient) {}
-
+  
   // REGISTER
   register(data: RegisterModel): Observable<UserModel> {
     return this.http.post<UserModel>(this.apiUrl, data);

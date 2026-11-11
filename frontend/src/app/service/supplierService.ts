@@ -11,7 +11,6 @@ import { Supplier, SupplierPayload } from '../models/supplier';
 export class SupplierService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/suppliers`;
-
   private readonly readHeaders = new HttpHeaders({
     Accept: 'application/ld+json'
   });

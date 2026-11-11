@@ -13,26 +13,17 @@ interface AuthResponse {
   providedIn: 'root',
 })
 export class AuthService {
-
   private readonly http = inject(HttpClient);
-
   private readonly apiUrl = environment.apiUrl;
-
-  private readonly authState$ =
-    new BehaviorSubject<boolean>(
+  private readonly authState$ = new BehaviorSubject<boolean>(
       !!localStorage.getItem('token')
     );
 
-  private readonly user$ =
-    new BehaviorSubject<User | null>(null);
+  private readonly user$ = new BehaviorSubject<User | null>(null);
+  readonly isAuthenticated$ = this.authState$.asObservable();
+  readonly currentUser = this.user$.asObservable();
 
-  readonly isAuthenticated$ =
-    this.authState$.asObservable();
-
-  readonly currentUser =
-    this.user$.asObservable();
-
-  // Usado pelo authGuard
+  // Used by authGuard
   isAuthenticated(): boolean {
     return this.authState$.value;
   }
@@ -55,16 +46,13 @@ export class AuthService {
     ).pipe(
       tap(user => {
         console.log('User from backend:', user);
-
         this.user$.next(user);
         this.authState$.next(true);
       }),
       catchError(() => {
         localStorage.removeItem('token');
-
         this.user$.next(null);
         this.authState$.next(false);
-
         return of(null);
       })
     );
@@ -74,7 +62,6 @@ export class AuthService {
     localStorage.removeItem('token');
     this.user$.next(null);
     this.authState$.next(false);
-
     return of(void 0);
   }
 }

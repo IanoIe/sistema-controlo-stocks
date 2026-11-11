@@ -14,8 +14,8 @@ export class AuditLogService {
   private readonly apiUrl = `${environment.apiUrl}/audit_logs`;
 
   getAll(): Observable<any> {
-  return this.http.get<any>(this.apiUrl);
-}
+    return this.http.get<any>(this.apiUrl);
+  }
 
   getById(id: number): Observable<AuditLog> {
     return this.http.get<AuditLog>(`${this.apiUrl}/${id}`);
